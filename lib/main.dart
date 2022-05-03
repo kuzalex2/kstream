@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kstream/stream/camera_screen.dart';
+
 import 'package:kstream/widgets/widgets.dart';
 
 import 'package:flutter/services.dart';
@@ -89,10 +91,10 @@ class MainScreen extends StatelessWidget {
             if (state.micStatus.isUnknown || state.camStatus.isUnknown) {
               return const Loader();
             }
-            //
-            // if (state.micStatus.isGranted && state.camStatus.isGranted){
-            //   return const CameraScreen();
-            // }
+
+            if (state.micStatus.isGranted && state.camStatus.isGranted){
+              return const StreamScreen();
+            }
 
             return PermissionsScreen(permissionState: state,);
           }
@@ -101,12 +103,3 @@ class MainScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
