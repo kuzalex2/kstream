@@ -24,7 +24,7 @@ dependencies:
   flutter_rtmp_streamer:
     git:
       url: https://github.com/kuzalex2/flutter_rtmp_streamer.git
-      ref: 53363fad70bf9b3c16768ff427390b0f2cc69c2e
+      ref: cba131e
 
   cupertino_icons: ^1.0.2
 

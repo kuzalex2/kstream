@@ -24,7 +24,7 @@ class StreamScreen extends StatelessWidget {
             ),
           )
         ],
-        child: _StreamScreen()
+        child: const _StreamScreen()
     );
   }
 }
@@ -37,12 +37,19 @@ class _StreamScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         ),
       child:BlocBuilder<MyStreamingCubit, MyStreamingState>(
         builder: (context, state) {
+
+          if (state.fatalError.isNotEmpty) {
+            return FatalErrorWidget(state.fatalError);
+          }
+
           return Scaffold(
             body: Stack(
               fit: StackFit.expand,
@@ -69,6 +76,22 @@ class _StreamScreen extends StatelessWidget {
   }
 }
 
+class FatalErrorWidget extends StatelessWidget {
+  final String error;
+  const FatalErrorWidget(this.error, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.black,
+        child: Center(child: Text(error, textAlign: TextAlign.center,),),
+      ),
+    );
+  }
+}
+
+
 class LiveButton extends StatelessWidget {
 
   static const liveButtonAnimationDuration = Duration(milliseconds: 350);
@@ -91,7 +114,11 @@ class LiveButton extends StatelessWidget {
         duration: liveButtonAnimationDuration,
         curve: Curves.decelerate,
         child: ElevatedButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.black)),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.black),
+              minimumSize: MaterialStateProperty.all(const Size(150,40)),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+            ),
             onPressed: () { context.read<MyStreamingCubit>().startStream(); },
           child: const Text("Go Live")
         ),

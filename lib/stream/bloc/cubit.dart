@@ -38,7 +38,8 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     try {
       streamer = await FlutterRtmpStreamer.init(StreamingSettings.initial);
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), initialized: false));
+      emit(state.copyWith(fatalError: e.toString(), initialized: false));
+      return;
     }
 
     emit(state.copyWith(initialized: true));
