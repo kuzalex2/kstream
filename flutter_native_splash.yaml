@@ -1,0 +1,19 @@
+flutter_native_splash:
+
+  # fvm flutter pub run flutter_native_splash:create
+  # fvm flutter pub run flutter_native_splash:remove
+
+  color: "#000000"
+  #background_image: "assets/background.png"
+
+
+  image: assets/splash/kindpng_3557482.png
+
+  android: true
+  ios: true
+
+  web: false
+
+  # ios
+  fullscreen: false
+
