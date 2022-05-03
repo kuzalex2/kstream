@@ -1,6 +1,12 @@
 
 part of 'cubit.dart';
 
+enum ConnectState {
+  no,
+  ready,
+  connecting,
+  onAir,
+}
 
 class MyStreamingState extends Equatable {
 
@@ -8,6 +14,7 @@ class MyStreamingState extends Equatable {
   final String error;
   final String fatalError;
   final bool showLiveButton;
+  final ConnectState connectState;
   // final StreamingState streamingState;
   // final StreamingNotification streamingNotification;
 
@@ -18,6 +25,7 @@ class MyStreamingState extends Equatable {
     required this.error,
     required this.fatalError,
     required this.showLiveButton,
+    required this.connectState,
   });
 
   static const empty = MyStreamingState(
@@ -25,6 +33,7 @@ class MyStreamingState extends Equatable {
     error: "",
     fatalError: "",
     showLiveButton: false,
+    connectState: ConnectState.no,
   );
 
   MyStreamingState copyWith({
@@ -32,6 +41,7 @@ class MyStreamingState extends Equatable {
     String? error,
     String? fatalError,
     bool? showLiveButton,
+    ConnectState? connectState,
 
   }) {
     return MyStreamingState(
@@ -39,6 +49,7 @@ class MyStreamingState extends Equatable {
       error: error ?? this.error,
       fatalError: fatalError ?? this.fatalError,
       showLiveButton: showLiveButton ?? this.showLiveButton,
+      connectState: connectState ?? this.connectState,
     );
   }
 
@@ -48,6 +59,7 @@ class MyStreamingState extends Equatable {
     error,
     showLiveButton,
     fatalError,
+    connectState,
   ];
 }
 

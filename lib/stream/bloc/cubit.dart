@@ -47,8 +47,22 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     await Future.delayed(const Duration(seconds: 1));
     emit(state.copyWith(showLiveButton: state.initialized && !streamer.state.isStreaming));
 
+
     _sub1 = streamer.stateStream.listen((streamingState) {
-      emit(state.copyWith(showLiveButton: state.initialized && !streamingState.isStreaming));
+
+      final connectState;
+      if ( streamingState.isRtmpConnected ) {
+        connectState = ConnectState.onAir;
+      } else if (streamingState.isStreaming){
+        connectState = ConnectState.connecting;
+      } else {
+        connectState = ConnectState.ready;
+      }
+
+      emit(state.copyWith(
+        showLiveButton: state.initialized && !streamingState.isStreaming,
+        connectState: connectState,
+      ));
     });
 
     _sub2 = streamer.notificationStream.listen((event) {
@@ -57,14 +71,30 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
   }
 
   startStream() {
-    if (!state.initialized)
+    if (!state.initialized) {
       return;
+    }
 
     try {
       streamer.startStream(
           uri: "rtmp://flutter-webrtc.kuzalex.com/live",
           streamName: "one"
       );
+    } catch(e){
+      emit(state.copyWith(error: e.toString()));
+    }
+
+  }
+
+  stopStream() {
+
+    if (!state.initialized) {
+      return;
+    }
+
+    try {
+      streamer.stopStream();
+
     } catch(e){
       emit(state.copyWith(error: e.toString()));
     }

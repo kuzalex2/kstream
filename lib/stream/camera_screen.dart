@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:kstream/widgets/widgets.dart';
 
 import 'package:kstream/repository/repository.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp_streamer.dart';
+import 'package:unicons/unicons.dart';
 
 import 'bloc/cubit.dart';
 
@@ -58,15 +60,24 @@ class _StreamScreen extends StatelessWidget {
 
                 Container(color: Colors.black,),
 
+
+
                 if (state.initialized)
                   Center(
                     child: FlutterRtmpCameraPreview(controller: context.read<MyStreamingCubit>().streamer),
                   ),
 
-                LiveButton(enabled: state.showLiveButton,),
 
-                // Text("aaa"),
-                // Loader(),
+
+                const BottomGradient(),
+
+                Positioned(
+                    top: 50,
+                    right: 20,
+                    child: StreamingStatusWidget(connectState: state.connectState)
+                ),
+
+                LiveButton(enabled: state.showLiveButton,),
               ],
             )
           );
@@ -90,6 +101,99 @@ class FatalErrorWidget extends StatelessWidget {
     );
   }
 }
+
+class StreamingStatusWidget extends StatelessWidget {
+
+  static const animationDuration = Duration(milliseconds: 500);
+
+
+  final ConnectState connectState;
+  const StreamingStatusWidget({Key? key, required this.connectState}) : super(key: key);
+
+  Color get _backColor {
+    switch (connectState){
+      case ConnectState.no:
+      case ConnectState.ready: return const Color.fromRGBO(0, 0, 0, 0.6);
+      case ConnectState.connecting: return const Color.fromRGBO(252, 183, 19, 1);
+      case ConnectState.onAir: return const Color.fromRGBO(127, 186, 66, 1);
+    }
+  }
+
+  String get _text {
+    switch (connectState){
+      case ConnectState.no:
+      case ConnectState.ready: return "✓ READY";
+      case ConnectState.connecting: return "CONNECTING";
+      case ConnectState.onAir: return "ON AIR";
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+
+        AnimatedContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            color: _backColor,
+          ),
+          duration: animationDuration,
+          child: Text(
+            _text,
+          ),
+        ),
+
+
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: (connectState == ConnectState.connecting || connectState == ConnectState.onAir) ? () {
+            context.read<MyStreamingCubit>().stopStream();
+          } : null,
+          child: Visibility(
+            visible: (connectState == ConnectState.connecting || connectState == ConnectState.onAir),
+            child: const Icon(UniconsLine.multiply, color: Colors.white, size: 24,),
+          ),
+        )
+
+      ],
+    );
+  }
+}
+
+
+class BottomGradient extends StatelessWidget {
+  const BottomGradient({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    const double size = 100;
+
+    final orientation = MediaQuery.of(context).orientation;
+
+    final Alignment begin = orientation == Orientation.portrait
+        ? Alignment.topCenter
+        : Alignment.centerLeft;
+
+    final Alignment end = orientation == Orientation.portrait
+        ? Alignment.bottomCenter
+        : Alignment.centerRight;
+
+    return Container(
+      height: orientation == Orientation.portrait ? size : null,
+      width: orientation == Orientation.landscape ? size : null,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: begin,
+              end: end,
+              colors: const [ Color.fromRGBO(0, 0, 0, 0), Color.fromRGBO(0, 0, 0, 0.6)]
+          )
+      ),
+    );
+  }
+}
+
 
 
 class LiveButton extends StatelessWidget {
@@ -119,7 +223,9 @@ class LiveButton extends StatelessWidget {
               minimumSize: MaterialStateProperty.all(const Size(150,40)),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
             ),
-            onPressed: () { context.read<MyStreamingCubit>().startStream(); },
+            onPressed: () {
+              context.read<MyStreamingCubit>().startStream();
+              },
           child: const Text("Go Live")
         ),
       ),
