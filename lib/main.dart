@@ -66,6 +66,12 @@ class MyApp extends StatelessWidget {
             brightness: Brightness.dark,
             textTheme: const TextTheme(
               bodyText1: TextStyle(fontSize: 16.0),
+              bodyText2: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Inter',
+                letterSpacing: 1.02,
+              ),
             ),
           ),
           themeMode: ThemeMode.dark,

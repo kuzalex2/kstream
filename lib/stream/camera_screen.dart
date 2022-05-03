@@ -140,8 +140,11 @@ class StreamingStatusWidget extends StatelessWidget {
             color: _backColor,
           ),
           duration: animationDuration,
-          child: Text(
-            _text,
+          child: Padding(
+            padding: const EdgeInsets.only(left:4.0, right: 4, top: 2, bottom: 2),
+            child: Text(
+              _text,
+            ),
           ),
         ),
 
@@ -226,7 +229,7 @@ class LiveButton extends StatelessWidget {
             onPressed: () {
               context.read<MyStreamingCubit>().startStream();
               },
-          child: const Text("Go Live")
+          child: Text("Go Live", style: Theme.of(context).textTheme.bodyText2,)
         ),
       ),
     );
