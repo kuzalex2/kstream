@@ -73,7 +73,7 @@ class _StreamScreen extends StatelessWidget {
 
                 Positioned(
                     top: 50,
-                    right: 20,
+                    right: 10,
                     child: StreamingStatusWidget(connectState: state.connectState)
                 ),
 
