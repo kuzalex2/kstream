@@ -89,24 +89,84 @@ class _StreamScreen extends StatelessWidget {
 
                 Container(color: Colors.black,),
 
-
-
                 if (state.initialized)
                   Center(
-                    child: FlutterRtmpCameraPreview(controller: context.read<MyStreamingCubit>().streamer),
+                    child: AspectRatio(
+                      aspectRatio: state.resolution.width == 0 ? 1.0 : 1.0 * state.resolution.height / state.resolution.width,
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: [
+
+                          Container(
+                            child: const FlutterRtmpCameraView(),
+                          ),
+
+                          const Positioned(
+                              bottom: 0,
+                              child: BottomGradient()
+                          ),
+
+                          Positioned(
+                              top: 10,
+                              right: 10,
+                              child: StreamingStatusWidget(connectState: state.connectState)
+                          ),
+
+                          Positioned(
+                              bottom: 0,
+                              child: Row(children: [
+
+
+                                StreamControlButton(
+                                  iconData: UniconsLine.microphone,
+                                  enabled: true,
+                                  onPressed: () {
+
+                                  },
+                                ),
+
+                                StreamControlButton(
+                                  iconData: UniconsLine.auto_flash,
+                                  enabled: true,
+                                  onPressed: () {
+
+                                  },
+                                ),
+
+                                StreamControlButton(
+                                  iconData: UniconsLine.sync_icon,
+                                  enabled: true,
+                                  onPressed: () {
+
+                                  },
+                                ),
+
+                                StreamControlButton(
+                                  iconData: UniconsLine.setting,
+                                  enabled: true,
+                                  onPressed: () {
+
+                                  },
+                                ),
+
+
+
+                              ],),
+                          ),
+
+
+                          LiveButton(enabled: state.showLiveButton, position: 50,),
+
+                        ],
+                      ),
+                    )
                   ),
 
 
 
-                const BottomGradient(),
 
-                Positioned(
-                    top: 50,
-                    right: 10,
-                    child: StreamingStatusWidget(connectState: state.connectState)
-                ),
 
-                LiveButton(enabled: state.showLiveButton,),
+
               ],
             );
           }
@@ -115,6 +175,23 @@ class _StreamScreen extends StatelessWidget {
     );
   }
 }
+
+class StreamControlButton extends StatelessWidget {
+  final IconData iconData;
+  final void Function() onPressed;
+  final bool enabled;
+
+  const StreamControlButton({Key? key, required this.iconData, required this.onPressed, required this.enabled,}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return  CupertinoButton(
+      child: Icon(iconData, color: enabled ? Colors.white : null,),
+      onPressed: enabled ? onPressed : null,
+    );
+  }
+}
+
 
 class FatalErrorWidget extends StatelessWidget {
   final String error;
@@ -200,9 +277,11 @@ class BottomGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double size = 100;
+    const double size = 140;
 
     final orientation = MediaQuery.of(context).orientation;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
     final Alignment begin = orientation == Orientation.portrait
         ? Alignment.topCenter
@@ -213,8 +292,9 @@ class BottomGradient extends StatelessWidget {
         : Alignment.centerRight;
 
     return Container(
-      height: orientation == Orientation.portrait ? size : null,
-      width: orientation == Orientation.landscape ? size : null,
+      height: orientation == Orientation.portrait ? size : height,
+      width: orientation == Orientation.landscape ? size : width,
+      // color: Colors.red,
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: begin,
@@ -232,15 +312,16 @@ class LiveButton extends StatelessWidget {
 
   static const liveButtonAnimationDuration = Duration(milliseconds: 350);
   final bool enabled;
+  final double position;
 
 
-  const LiveButton({Key? key, required this.enabled}) : super(key: key);
+  const LiveButton({Key? key, required this.enabled, required this.position}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
 
-    final double finalPosition = enabled ? 100 : -100;
+    final double finalPosition = enabled ? position : -100;
 
     return AnimatedPositioned(
       duration: liveButtonAnimationDuration,

@@ -21,11 +21,14 @@ dependencies:
   package_info: ^2.0.2
   uuid: ^3.0.6
 
+#  flutter_rtmp_streamer:
+#    path: ../flutter_rtmp_streamer/
+
 
   flutter_rtmp_streamer:
     git:
       url: https://github.com/kuzalex2/flutter_rtmp_streamer.git
-      ref: 98f1fdb
+      ref: 6374be9
 
   cupertino_icons: ^1.0.2
 

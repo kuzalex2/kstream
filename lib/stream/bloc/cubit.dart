@@ -36,13 +36,17 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     _repository.sharedPreferences;
 
     try {
-      streamer = await FlutterRtmpStreamer.init(StreamingSettings.initial);
+      streamer = await FlutterRtmpStreamer.init(
+          StreamingSettings.initial.copyWith(
+              // resolution: const Resolution(720, 720),
+          )
+      );
     } catch (e) {
       emit(state.copyWith(fatalError: e.toString(), initialized: false));
       return;
     }
 
-    emit(state.copyWith(initialized: true));
+    emit(state.copyWith(initialized: true, resolution: streamer.state.resolution));
 
     await Future.delayed(const Duration(seconds: 1));
     emit(state.copyWith(showLiveButton: state.initialized && !streamer.state.isStreaming));
@@ -62,6 +66,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       emit(state.copyWith(
         showLiveButton: state.initialized && !streamingState.isStreaming,
         connectState: connectState,
+        resolution: streamingState.resolution,
       ));
     });
 
