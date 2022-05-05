@@ -136,8 +136,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: cba131e
-      resolved-ref: cba131e20ce8beb5157918f8e4237ff02543fe73
+      ref: "98f1fdb"
+      resolved-ref: "98f1fdbbe1a776b9cc1c89c66ad31c483b5fb0cd"
       url: "https://github.com/kuzalex2/flutter_rtmp_streamer.git"
     source: git
     version: "0.0.1"
@@ -415,6 +415,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
+  uuid:
+    dependency: "direct main"
+    description:
+      name: uuid
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.6"
   vector_math:
     dependency: transitive
     description:

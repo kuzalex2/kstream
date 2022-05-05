@@ -50,7 +50,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
     _sub1 = streamer.stateStream.listen((streamingState) {
 
-      final connectState;
+      final ConnectState connectState;
       if ( streamingState.isRtmpConnected ) {
         connectState = ConnectState.onAir;
       } else if (streamingState.isStreaming){
@@ -65,9 +65,10 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       ));
     });
 
-    _sub2 = streamer.notificationStream.listen((event) {
-
-    });
+    _sub2 = streamer.notificationStream.listen(
+            (event) =>
+                emit(state.copyWith(error: event.description))
+    );
   }
 
   startStream() {

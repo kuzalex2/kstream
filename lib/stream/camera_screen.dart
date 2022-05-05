@@ -32,6 +32,27 @@ class StreamScreen extends StatelessWidget {
 }
 
 
+class ToastWidget extends StatelessWidget {
+  final String title;
+  const ToastWidget({Key? key, required this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+        color: Colors.grey,
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
+      ],),
+    );
+  }
+}
 
 
 class _StreamScreen extends StatelessWidget {
@@ -45,15 +66,23 @@ class _StreamScreen extends StatelessWidget {
         value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         ),
-      child:BlocBuilder<MyStreamingCubit, MyStreamingState>(
-        builder: (context, state) {
+      child:Scaffold(
+        body: BlocConsumer<MyStreamingCubit, MyStreamingState>(
 
-          if (state.fatalError.isNotEmpty) {
-            return FatalErrorWidget(state.fatalError);
-          }
+          listenWhen: (previous, current) => current.error.isNotEmpty && previous.error!=current.error,
+          listener: (context, state){
 
-          return Scaffold(
-            body: Stack(
+            AppToast.show(context, child: ToastWidget(title: state.error,));
+            context.read<MyStreamingCubit>().consumeError();
+          },
+
+          builder: (context, state) {
+
+            if (state.fatalError.isNotEmpty) {
+              return FatalErrorWidget(state.fatalError);
+            }
+
+            return Stack(
               fit: StackFit.expand,
               alignment: Alignment.topCenter,
               children:  [
@@ -79,9 +108,9 @@ class _StreamScreen extends StatelessWidget {
 
                 LiveButton(enabled: state.showLiveButton,),
               ],
-            )
-          );
-        }
+            );
+          }
+        ),
       )
     );
   }
