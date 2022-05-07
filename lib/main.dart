@@ -99,7 +99,7 @@ class MainScreen extends StatelessWidget {
             }
 
             if (state.micStatus.isGranted && state.camStatus.isGranted){
-              return const StreamScreen();
+              return const CameraScreen();
             }
 
             return PermissionsScreen(permissionState: state,);

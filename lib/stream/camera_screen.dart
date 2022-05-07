@@ -13,8 +13,8 @@ import 'bloc/cubit.dart';
 
 
 
-class StreamScreen extends StatelessWidget {
-  const StreamScreen({Key? key}) : super(key: key);
+class CameraScreen extends StatelessWidget {
+  const CameraScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class StreamScreen extends StatelessWidget {
             ),
           )
         ],
-        child: const _StreamScreen()
+        child: const _CameraScreen()
     );
   }
 }
@@ -55,8 +55,8 @@ class ToastWidget extends StatelessWidget {
 }
 
 
-class _StreamScreen extends StatelessWidget {
-  const _StreamScreen({Key? key}) : super(key: key);
+class _CameraScreen extends StatelessWidget {
+  const _CameraScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +129,6 @@ class _StreamScreen extends StatelessWidget {
                                   onPressed: () =>
                                     context.read<MyStreamingCubit>().switchMicrophone(),
                                 ),
-                                //
-                                // StreamControlButton(
-                                //   iconData: UniconsLine.auto_flash,
-                                //   enabled: true,
-                                //   onPressed: () {
-                                //
-                                //   },
-                                // ),
 
                                 StreamControlButton(
                                   iconData: UniconsLine.sync_icon,
