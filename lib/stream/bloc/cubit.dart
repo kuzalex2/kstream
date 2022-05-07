@@ -126,6 +126,23 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   }
 
+  switchMicrophone() {
+
+    if (!state.initialized) {
+      return;
+    }
+
+    try {
+      _streamer.changeStreamingSettings(_streamer.state.streamingSettings.copyWith(
+          muteAudio: !_streamer.state.isAudioMuted
+      ));
+
+    } catch(e){
+      emit(state.copyWith(error: e.toString()));
+    }
+
+  }
+
 
 
 

@@ -125,9 +125,9 @@ class _StreamScreen extends StatelessWidget {
                                 StreamControlButton(
                                   iconData: state.audioMuted ? UniconsLine.microphone_slash : UniconsLine.microphone,
                                   enabled: true,
-                                  onPressed: () {
-
-                                  },
+                                  activeColor: state.audioMuted ? Colors.red : null,
+                                  onPressed: () =>
+                                    context.read<MyStreamingCubit>().switchMicrophone(),
                                 ),
                                 //
                                 // StreamControlButton(
@@ -177,13 +177,20 @@ class StreamControlButton extends StatelessWidget {
   final IconData iconData;
   final void Function() onPressed;
   final bool enabled;
+  final Color? activeColor;
 
-  const StreamControlButton({Key? key, required this.iconData, required this.onPressed, required this.enabled,}) : super(key: key);
+  const StreamControlButton({
+    Key? key,
+    required this.iconData,
+    required this.onPressed,
+    required this.enabled,
+    this.activeColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return  CupertinoButton(
-      child: Icon(iconData, color: enabled ? Colors.white : null,),
+      child: Icon(iconData, color: enabled ? (activeColor ?? Colors.white) : null,),
       onPressed: enabled ? onPressed : null,
     );
   }
