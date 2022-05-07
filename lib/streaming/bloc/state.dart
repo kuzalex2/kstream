@@ -17,8 +17,6 @@ class MyStreamingState extends Equatable {
   final ConnectState connectState;
   final Resolution resolution;
   final bool audioMuted;
-  // final StreamingState streamingState;
-  // final StreamingNotification streamingNotification;
 
 
 

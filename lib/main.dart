@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kstream/stream/camera_screen.dart';
+import 'package:kstream/streaming/camera_screen.dart';
 
 import 'package:kstream/widgets/widgets.dart';
 
