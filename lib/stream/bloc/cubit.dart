@@ -46,7 +46,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       return;
     }
 
-    emit(state.copyWith(initialized: true, resolution: _streamer.state.resolution));
+    emit(state.copyWith(initialized: true, resolution: _streamer.state.resolution, audioMuted: _streamer.state.isAudioMuted));
 
     await Future.delayed(const Duration(seconds: 1));
     emit(state.copyWith(showLiveButton: state.initialized && !_streamer.state.isStreaming));
@@ -67,6 +67,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
         showLiveButton: state.initialized && !streamingState.isStreaming,
         connectState: connectState,
         resolution: streamingState.resolution,
+        audioMuted: streamingState.isAudioMuted,
       ));
     });
 

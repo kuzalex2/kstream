@@ -122,13 +122,13 @@ class _StreamScreen extends StatelessWidget {
                               child: Row(children: [
 
 
-                                // StreamControlButton(
-                                //   iconData: UniconsLine.microphone,
-                                //   enabled: true,
-                                //   onPressed: () {
-                                //
-                                //   },
-                                // ),
+                                StreamControlButton(
+                                  iconData: state.audioMuted ? UniconsLine.microphone_slash : UniconsLine.microphone,
+                                  enabled: true,
+                                  onPressed: () {
+
+                                  },
+                                ),
                                 //
                                 // StreamControlButton(
                                 //   iconData: UniconsLine.auto_flash,

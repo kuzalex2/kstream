@@ -16,6 +16,7 @@ class MyStreamingState extends Equatable {
   final bool showLiveButton;
   final ConnectState connectState;
   final Resolution resolution;
+  final bool audioMuted;
   // final StreamingState streamingState;
   // final StreamingNotification streamingNotification;
 
@@ -28,6 +29,7 @@ class MyStreamingState extends Equatable {
     required this.showLiveButton,
     required this.connectState,
     required this.resolution,
+    required this.audioMuted,
   });
 
   static const empty = MyStreamingState(
@@ -37,6 +39,7 @@ class MyStreamingState extends Equatable {
     showLiveButton: false,
     connectState: ConnectState.no,
     resolution: Resolution(1, 1),
+    audioMuted: false,
   );
 
   MyStreamingState copyWith({
@@ -46,6 +49,7 @@ class MyStreamingState extends Equatable {
     bool? showLiveButton,
     ConnectState? connectState,
     Resolution? resolution,
+    bool? audioMuted,
 
   }) {
     return MyStreamingState(
@@ -55,6 +59,7 @@ class MyStreamingState extends Equatable {
       showLiveButton: showLiveButton ?? this.showLiveButton,
       connectState: connectState ?? this.connectState,
       resolution: resolution ?? this.resolution,
+      audioMuted: audioMuted ?? this.audioMuted,
     );
   }
 
@@ -66,6 +71,7 @@ class MyStreamingState extends Equatable {
     fatalError,
     connectState,
     resolution,
+    audioMuted,
   ];
 }
 
