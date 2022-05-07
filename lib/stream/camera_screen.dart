@@ -102,6 +102,11 @@ class _StreamScreen extends StatelessWidget {
                           ),
 
                           const Positioned(
+                              top: 0,
+                              child: TopGradient(),
+                          ),
+
+                          const Positioned(
                               bottom: 0,
                               child: BottomGradient()
                           ),
@@ -117,28 +122,26 @@ class _StreamScreen extends StatelessWidget {
                               child: Row(children: [
 
 
-                                StreamControlButton(
-                                  iconData: UniconsLine.microphone,
-                                  enabled: true,
-                                  onPressed: () {
-
-                                  },
-                                ),
-
-                                StreamControlButton(
-                                  iconData: UniconsLine.auto_flash,
-                                  enabled: true,
-                                  onPressed: () {
-
-                                  },
-                                ),
+                                // StreamControlButton(
+                                //   iconData: UniconsLine.microphone,
+                                //   enabled: true,
+                                //   onPressed: () {
+                                //
+                                //   },
+                                // ),
+                                //
+                                // StreamControlButton(
+                                //   iconData: UniconsLine.auto_flash,
+                                //   enabled: true,
+                                //   onPressed: () {
+                                //
+                                //   },
+                                // ),
 
                                 StreamControlButton(
                                   iconData: UniconsLine.sync_icon,
                                   enabled: true,
-                                  onPressed: () {
-
-                                  },
+                                  onPressed: () => context.read<MyStreamingCubit>().switchCamera(),
                                 ),
 
                                 StreamControlButton(
@@ -161,12 +164,6 @@ class _StreamScreen extends StatelessWidget {
                       ),
                     )
                   ),
-
-
-
-
-
-
               ],
             );
           }
@@ -271,37 +268,64 @@ class StreamingStatusWidget extends StatelessWidget {
   }
 }
 
+class MyGradient extends StatelessWidget {
 
-class BottomGradient extends StatelessWidget {
-  const BottomGradient({Key? key}) : super(key: key);
+  const MyGradient({Key? key, required this.gradient, required this.size}) : super(key: key);
+  final LinearGradient gradient;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    const double size = 140;
-
     final orientation = MediaQuery.of(context).orientation;
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
-    final Alignment begin = orientation == Orientation.portrait
-        ? Alignment.topCenter
-        : Alignment.centerLeft;
-
-    final Alignment end = orientation == Orientation.portrait
-        ? Alignment.bottomCenter
-        : Alignment.centerRight;
 
     return Container(
       height: orientation == Orientation.portrait ? size : height,
       width: orientation == Orientation.landscape ? size : width,
       // color: Colors.red,
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: begin,
-              end: end,
-              colors: const [ Color.fromRGBO(0, 0, 0, 0), Color.fromRGBO(0, 0, 0, 0.6)]
-          )
+          gradient: gradient
       ),
+    );
+  }
+}
+
+
+class TopGradient extends StatelessWidget {
+  const TopGradient({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return const MyGradient(
+        size: 140,
+        gradient: LinearGradient(
+          colors: [
+            Color.fromRGBO(0, 0, 0, 0.32),
+            Color.fromRGBO(0, 0, 0, 0),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )
+    );
+  }
+}
+
+
+class BottomGradient extends StatelessWidget {
+  const BottomGradient({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return const MyGradient(
+        size: 140,
+        gradient: LinearGradient(
+          colors: [ Color.fromRGBO(0, 0, 0, 0), Color.fromRGBO(0, 0, 0, 0.6)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        )
     );
   }
 }

@@ -18,7 +18,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   // AppLifecycleState? _prevState;
   final Repository _repository;
-  late final FlutterRtmpStreamer streamer;
+  late final FlutterRtmpStreamer _streamer;
 
   StreamSubscription? _sub1;
   StreamSubscription? _sub2;
@@ -36,7 +36,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     _repository.sharedPreferences;
 
     try {
-      streamer = await FlutterRtmpStreamer.init(
+      _streamer = await FlutterRtmpStreamer.init(
           StreamingSettings.initial.copyWith(
               // resolution: const Resolution(720, 720),
           )
@@ -46,13 +46,13 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       return;
     }
 
-    emit(state.copyWith(initialized: true, resolution: streamer.state.resolution));
+    emit(state.copyWith(initialized: true, resolution: _streamer.state.resolution));
 
     await Future.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(showLiveButton: state.initialized && !streamer.state.isStreaming));
+    emit(state.copyWith(showLiveButton: state.initialized && !_streamer.state.isStreaming));
 
 
-    _sub1 = streamer.stateStream.listen((streamingState) {
+    _sub1 = _streamer.stateStream.listen((streamingState) {
 
       final ConnectState connectState;
       if ( streamingState.isRtmpConnected ) {
@@ -70,7 +70,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       ));
     });
 
-    _sub2 = streamer.notificationStream.listen(
+    _sub2 = _streamer.notificationStream.listen(
             (event) =>
                 emit(state.copyWith(error: event.description))
     );
@@ -82,7 +82,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      streamer.startStream(
+      _streamer.startStream(
           uri: "rtmp://flutter-webrtc.kuzalex.com/live",
           streamName: "one"
       );
@@ -99,7 +99,25 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      streamer.stopStream();
+      _streamer.stopStream();
+
+    } catch(e){
+      emit(state.copyWith(error: e.toString()));
+    }
+
+  }
+
+  switchCamera() {
+
+    if (!state.initialized) {
+      return;
+    }
+
+    try {
+      _streamer.changeStreamingSettings(_streamer.state.streamingSettings.copyWith(
+        cameraFacing: _streamer.state.streamingSettings.cameraFacing == StreamingCameraFacing.back
+            ? StreamingCameraFacing.front : StreamingCameraFacing.back
+      ));
 
     } catch(e){
       emit(state.copyWith(error: e.toString()));
