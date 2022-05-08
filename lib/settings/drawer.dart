@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp/controller.dart';
@@ -12,6 +11,7 @@ import '../repository/repository.dart';
 import '../widgets/widgets.dart';
 import 'bloc/cubit.dart';
 import 'dart:io' show Platform;
+import 'package:collection/collection.dart';
 
 
 
@@ -138,11 +138,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                       title: "Bitrate",
 
                       options: videoBitrates,
-                      currentSelection: (settings) =>
-                        videoBitrates.firstWhere((b) =>
-                          b.value == state.streamingState.streamingSettings.videoBitrate,
-                            orElse: () => const NamedValue(0, "")),
 
+                      isSelectedPredicate: (settings, item) => item == settings.videoBitrate,
 
                       onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                                 state.streamingState.streamingSettings.copyWith(videoBitrate: item.value)
@@ -156,11 +153,7 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     title: "Camera Facing",
 
                     options: cameraFacings,
-                    currentSelection: (settings) =>
-                        cameraFacings.firstWhere((b) =>
-                        b.value == state.streamingState.streamingSettings.cameraFacing,
-                            orElse: () => const NamedValue(StreamingCameraFacing.back, "")),
-
+                    isSelectedPredicate: (settings, item) => item == settings.cameraFacing,
 
                     onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                         state.streamingState.streamingSettings.copyWith(cameraFacing: item.value)
@@ -176,11 +169,7 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     title: "FPS",
 
                     options: videoFPSs,
-                    currentSelection: (settings) =>
-                        videoFPSs.firstWhere((b) =>
-                        b.value == state.streamingState.streamingSettings.videoFps,
-                            orElse: () => const NamedValue(30, "")),
-
+                    isSelectedPredicate: (settings, item) => item == settings.videoFps,
 
                     onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                         state.streamingState.streamingSettings.copyWith(videoFps: item.value)
@@ -196,11 +185,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                       title: "h264 Profile",
 
                       options: h264Profiles,
-                      currentSelection: (settings) =>
-                          h264Profiles.firstWhere((b) =>
-                          b.value == state.streamingState.streamingSettings.h264profile,
-                              orElse: () => const NamedValue("baseline", "")),
 
+                      isSelectedPredicate: (settings, item) => item == settings.h264profile,
 
                       onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                           state.streamingState.streamingSettings.copyWith(h264profile: item.value)
@@ -215,11 +201,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                       title: "Stabilization Mode",
 
                       options: videoStabilizationModes,
-                      currentSelection: (settings) =>
-                          videoStabilizationModes.firstWhere((b) =>
-                          b.value == state.streamingState.streamingSettings.stabilizationMode,
-                              orElse: () => const NamedValue("auto", "")),
 
+                      isSelectedPredicate: (settings, item) => item == settings.stabilizationMode,
 
                       onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                           state.streamingState.streamingSettings.copyWith(stabilizationMode: item.value)
@@ -236,10 +219,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     title: "Audio Bitrate",
 
                     options: audioBitrates,
-                    currentSelection: (settings) =>
-                        audioBitrates.firstWhere((b) =>
-                        b.value == state.streamingState.streamingSettings.audioBitrate,
-                            orElse: () => const NamedValue(-1, "")),
+
+                    isSelectedPredicate: (settings, item) => item == settings.audioBitrate,
 
 
                     onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
@@ -254,11 +235,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     title: "Sample Rate",
 
                     options: audioSampleRates,
-                    currentSelection: (settings) =>
-                        audioSampleRates.firstWhere((b) =>
-                        b.value == state.streamingState.streamingSettings.audioSampleRate,
-                            orElse: () => const NamedValue(-1, "")),
 
+                    isSelectedPredicate: (settings, item) => item == settings.audioSampleRate,
 
                     onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                         state.streamingState.streamingSettings.copyWith(audioSampleRate: item.value)
@@ -272,11 +250,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     title: "Channels Count",
 
                     options: audioChannelsCounts,
-                    currentSelection: (settings) =>
-                        audioChannelsCounts.firstWhere((b) =>
-                        b.value == state.streamingState.streamingSettings.audioChannelCount,
-                            orElse: () => const NamedValue(-1, "")),
 
+                    isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
 
                     onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
                         state.streamingState.streamingSettings.copyWith(audioChannelCount: item.value)
@@ -342,7 +317,7 @@ class VideoResolutionsOption extends StatelessWidget {
 class SelectListOption<T> extends StatelessWidget {
 
   final List<NamedValue<T>> options;
-  final NamedValue<T> Function(StreamingSettings) currentSelection;
+  final Function(StreamingSettings, T) isSelectedPredicate;
   final void Function(NamedValue<T>) onSelected;
   final String title;
 
@@ -352,10 +327,9 @@ class SelectListOption<T> extends StatelessWidget {
     Key? key,
     required this.title,
     required this.options,
-    required this.currentSelection,
+    required this.isSelectedPredicate,
     required this.onSelected,
   }) : super(key: key);
-
 
 
   @override
@@ -365,11 +339,13 @@ class SelectListOption<T> extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
 
-          final selected = currentSelection(state.streamingState.streamingSettings);
+          final selected = options.firstWhereOrNull(
+                  (b) => isSelectedPredicate(state.streamingState.streamingSettings, b.value),
+          );
 
           return SettingsOption(
             title: title,
-            rightTitle: selected.name,
+            rightTitle: selected?.name ?? "",
             onTap: () =>
                 Navigator.of(context).push(
                     MaterialPageRoute(
