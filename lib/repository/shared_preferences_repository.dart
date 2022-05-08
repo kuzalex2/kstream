@@ -49,4 +49,31 @@ class SharedPreferencesRepository {
   }
 
 
+
+
+  ///
+  /// Flutter RTMP Streamer Settings
+  ///
+
+  set streamingSettings(StreamingSettings value) {
+    _prefs.setString("streamingSettings", jsonEncode(value.toJson()));
+  }
+
+  StreamingSettings get streamingSettings {
+    final saved = _prefs.getString("streamingSettings");
+    if (saved != null) {
+      try {
+        return StreamingSettings.fromJson(jsonDecode(saved));
+
+      } catch (_){
+
+      }
+    }
+
+    return StreamingSettings.initial;
+  }
+
+
+
+
 }

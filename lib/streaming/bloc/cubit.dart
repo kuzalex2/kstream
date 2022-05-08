@@ -17,15 +17,15 @@ part 'state.dart';
 class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObserver {
 
   // AppLifecycleState? _prevState;
-  final Repository _repository;
-  late final FlutterRtmpStreamer _streamer;
+  final Repository repository;
+  late final FlutterRtmpStreamer streamer;
 
   StreamSubscription? _sub1;
   StreamSubscription? _sub2;
 
 
 
-  MyStreamingCubit(this._repository) : super(MyStreamingState.empty) {
+  MyStreamingCubit(this.repository) : super(MyStreamingState.empty) {
     WidgetsBinding.instance?.addObserver(this);
 
     _init();
@@ -33,26 +33,29 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   _init() async {
 
-    _repository.sharedPreferences;
+
+
+    repository.sharedPreferences;
 
     try {
-      _streamer = await FlutterRtmpStreamer.init(
-          StreamingSettings.initial.copyWith(
+      streamer = await FlutterRtmpStreamer.init(
+          repository.sharedPreferences.streamingSettings
+          // .copyWith(
               // resolution: const Resolution(720, 720),
-          )
+          // )
       );
     } catch (e) {
       emit(state.copyWith(fatalError: e.toString(), initialized: false));
       return;
     }
 
-    emit(state.copyWith(initialized: true, resolution: _streamer.state.resolution, audioMuted: _streamer.state.isAudioMuted));
+    emit(state.copyWith(initialized: true, resolution: streamer.state.resolution, audioMuted: streamer.state.isAudioMuted));
 
     await Future.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(showLiveButton: state.initialized && !_streamer.state.isStreaming));
+    emit(state.copyWith(showLiveButton: state.initialized && !streamer.state.isStreaming));
 
 
-    _sub1 = _streamer.stateStream.listen((streamingState) {
+    _sub1 = streamer.stateStream.listen((streamingState) {
 
       final ConnectState connectState;
       if ( streamingState.isRtmpConnected ) {
@@ -71,7 +74,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       ));
     });
 
-    _sub2 = _streamer.notificationStream.listen(
+    _sub2 = streamer.notificationStream.listen(
             (event) =>
                 emit(state.copyWith(error: event.description))
     );
@@ -83,7 +86,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      _streamer.startStream(
+      streamer.startStream(
           uri: "rtmp://flutter-webrtc.kuzalex.com/live",
           streamName: "one"
       );
@@ -100,7 +103,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      _streamer.stopStream();
+      streamer.stopStream();
 
     } catch(e){
       emit(state.copyWith(error: e.toString()));
@@ -115,8 +118,8 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      _streamer.changeStreamingSettings(_streamer.state.streamingSettings.copyWith(
-        cameraFacing: _streamer.state.streamingSettings.cameraFacing == StreamingCameraFacing.back
+      streamer.changeStreamingSettings(streamer.state.streamingSettings.copyWith(
+        cameraFacing: streamer.state.streamingSettings.cameraFacing == StreamingCameraFacing.back
             ? StreamingCameraFacing.front : StreamingCameraFacing.back
       ));
 
@@ -133,8 +136,8 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
     }
 
     try {
-      _streamer.changeStreamingSettings(_streamer.state.streamingSettings.copyWith(
-          muteAudio: !_streamer.state.isAudioMuted
+      streamer.changeStreamingSettings(streamer.state.streamingSettings.copyWith(
+          muteAudio: !streamer.state.isAudioMuted
       ));
 
     } catch(e){
