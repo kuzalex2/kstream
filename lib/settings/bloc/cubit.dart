@@ -29,6 +29,10 @@ class SettingsCubit extends Cubit<SettingsState>  {
   }
 
   changeStreamingSettings(StreamingSettings newValue) async {
+    if (isClosed) {
+      return;
+    }
+
     await streamer.changeStreamingSettings(newValue);
 
     /// save

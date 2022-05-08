@@ -100,6 +100,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final cubit = context.read<SettingsCubit>();
+
     return Drawer(
       child: Scaffold(
         appBar: AppBar(title: const Text("Settings:"),),
@@ -120,7 +122,7 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                       title: "Background streaming",
                       disabled: state.streamingState.isStreaming || state.streamingState.inSettings,
                       value: state.streamingState.streamingSettings.serviceInBackground,
-                      onChanged: (bool value) => context.read<SettingsCubit>().changeStreamingSettings(
+                      onChanged: (bool value) => cubit.changeStreamingSettings(
                           state.streamingState.streamingSettings.copyWith(serviceInBackground: value)
                       ),
                     ),
@@ -140,8 +142,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
 
                       isSelectedPredicate: (settings, item) => item == settings.videoBitrate,
 
-                      onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                                state.streamingState.streamingSettings.copyWith(videoBitrate: item.value)
+                      onSelected: (item) => cubit.changeStreamingSettings(
+                                state.streamingState.streamingSettings.copyWith(videoBitrate: item)
                       ),
 
                   ),
@@ -154,8 +156,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     options: cameraFacings,
                     isSelectedPredicate: (settings, item) => item == settings.cameraFacing,
 
-                    onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                        state.streamingState.streamingSettings.copyWith(cameraFacing: item.value)
+                    onSelected: (item) => cubit.changeStreamingSettings(
+                        state.streamingState.streamingSettings.copyWith(cameraFacing: item)
                     ),
 
                   ),
@@ -170,8 +172,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     options: videoFPSs,
                     isSelectedPredicate: (settings, item) => item == settings.videoFps,
 
-                    onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                        state.streamingState.streamingSettings.copyWith(videoFps: item.value)
+                    onSelected: (item) => cubit.changeStreamingSettings(
+                        state.streamingState.streamingSettings.copyWith(videoFps: item)
                     ),
 
                   ),
@@ -187,8 +189,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
 
                       isSelectedPredicate: (settings, item) => item == settings.h264profile,
 
-                      onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                          state.streamingState.streamingSettings.copyWith(h264profile: item.value)
+                      onSelected: (item) => cubit.changeStreamingSettings(
+                          state.streamingState.streamingSettings.copyWith(h264profile: item)
                       ),
 
                     ),
@@ -203,8 +205,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
 
                       isSelectedPredicate: (settings, item) => item == settings.stabilizationMode,
 
-                      onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                          state.streamingState.streamingSettings.copyWith(stabilizationMode: item.value)
+                      onSelected: (item) => cubit.changeStreamingSettings(
+                          state.streamingState.streamingSettings.copyWith(stabilizationMode: item)
                       ),
 
                     ),
@@ -222,8 +224,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                     isSelectedPredicate: (settings, item) => item == settings.audioBitrate,
 
 
-                    onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                        state.streamingState.streamingSettings.copyWith(audioBitrate: item.value)
+                    onSelected: (item) => cubit.changeStreamingSettings(
+                        state.streamingState.streamingSettings.copyWith(audioBitrate: item)
                     ),
 
                   ),
@@ -237,8 +239,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
 
                     isSelectedPredicate: (settings, item) => item == settings.audioSampleRate,
 
-                    onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                        state.streamingState.streamingSettings.copyWith(audioSampleRate: item.value)
+                    onSelected: (item) =>  cubit.changeStreamingSettings(
+                        state.streamingState.streamingSettings.copyWith(audioSampleRate: item)
                     ),
 
                   ),
@@ -252,8 +254,8 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
 
                     isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
 
-                    onSelected: (item) => context.read<SettingsCubit>().changeStreamingSettings(
-                        state.streamingState.streamingSettings.copyWith(audioChannelCount: item.value)
+                    onSelected: (item) => cubit.changeStreamingSettings(
+                        state.streamingState.streamingSettings.copyWith(audioChannelCount: item)
                     ),
 
                   ),
@@ -283,8 +285,8 @@ class VideoResolutionsOption extends StatelessWidget {
         return SettingsOption(
           title: "Resolution",
           rightTitle: "${state.streamingState.streamingSettings.resolution}",
-          onTap: () =>
-              Navigator.of(context).push(
+          onTap: () async {
+              final result = await Navigator.of(context).push<Resolution>(
                   MaterialPageRoute(
                       builder: (_) => FutureListDrawer<Resolution>(
                         settingsCubit: context.read<SettingsCubit>(),
@@ -298,13 +300,19 @@ class VideoResolutionsOption extends StatelessWidget {
                           // return <Resolution>[];
                         }(),
                         selectedItem: state.streamingState.streamingSettings.resolution,
-                        onSelected: (item) =>
-                            context.read<SettingsCubit>().changeStreamingSettings(
-                                state.streamingState.streamingSettings.copyWith(resolution: item)
-                            ),
+                        // onSelected: (item) =>
+                        //     context.read<SettingsCubit>().changeStreamingSettings(
+                        //         state.streamingState.streamingSettings.copyWith(resolution: item)
+                        //     ),
                       )
                   )
-              ),
+              );
+              if (result!=null){
+                context.read<SettingsCubit>().changeStreamingSettings(
+                    state.streamingState.streamingSettings.copyWith(resolution: result)
+                );
+              }
+          },
           disabled: state.streamingState.inSettings || state.streamingState.isStreaming,
         );
       }
@@ -317,7 +325,7 @@ class SelectListOption<T> extends StatelessWidget {
 
   final List<NamedValue<T>> options;
   final Function(StreamingSettings, T) isSelectedPredicate;
-  final void Function(NamedValue<T>) onSelected;
+  final void Function(T) onSelected;
   final String title;
 
 
@@ -345,18 +353,22 @@ class SelectListOption<T> extends StatelessWidget {
           return SettingsOption(
             title: title,
             rightTitle: selected?.name ?? "",
-            onTap: () =>
-                Navigator.of(context).push(
+            onTap: () async {
+              final result = await Navigator.of(context).push<NamedValue<T>>(
                     MaterialPageRoute(
                         builder: (_) => ListDrawer<NamedValue<T>>(
                           settingsCubit: context.read<SettingsCubit>(),
                           title: title,
                           list: options,
                           selectedItem: selected,
-                          onSelected: onSelected,
+                          // onSelected: onSelected,
                         )
                     )
-                ),
+                );
+              if (result!=null){
+                onSelected(result.value);
+              }
+            },
             disabled: state.streamingState.inSettings || state.streamingState.isStreaming,
           );
         }
@@ -375,7 +387,7 @@ class ListDrawer<T> extends StatelessWidget {
     required this.title,
     required this.list,
     this.selectedItem,
-    this.onSelected,
+    // this.onSelected,
     this.checkIsStreaming = true,
     required this.settingsCubit,
   }) : super(key: key);
@@ -383,7 +395,7 @@ class ListDrawer<T> extends StatelessWidget {
   final String title;
   final List<T> list;
   final T? selectedItem;
-  final Function(T)? onSelected;
+  // final Function(T)? onSelected;
   final bool checkIsStreaming;
   final SettingsCubit settingsCubit;
 
@@ -402,10 +414,10 @@ class ListDrawer<T> extends StatelessWidget {
                   children: list.map((item) =>
                       InkWell(
                         onTap: state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
-                          Navigator.of(context).pop();
-                          if (onSelected!=null) {
-                            onSelected!(item);
-                          }
+                          Navigator.of(context).pop(item);
+                          // if (onSelected!=null) {
+                          //   onSelected!(item);
+                          // }
                         },
                         child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -436,7 +448,7 @@ class FutureListDrawer<T> extends StatelessWidget {
     required this.settingsCubit,
     required this.title,
     this.selectedItem,
-    this.onSelected,
+    // this.onSelected,
     required this.futureList,
   }) : super(key: key);
 
@@ -444,7 +456,7 @@ class FutureListDrawer<T> extends StatelessWidget {
   final String title;
   final Future<List<T>> futureList;
   final T? selectedItem;
-  final Function(T)? onSelected;
+  // final Function(T)? onSelected;
 
 
   @override
@@ -476,7 +488,7 @@ class FutureListDrawer<T> extends StatelessWidget {
             title: title,
             list: snapshot.data!,
             selectedItem: selectedItem,
-            onSelected: onSelected,
+            // onSelected: onSelected,
           );
         }
     );
