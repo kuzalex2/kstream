@@ -117,7 +117,6 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
                   Visibility(
                     visible: Platform.isAndroid,
                     child: SettingsSwitch(
-                      iconData: UniconsLine.wifi_router,
                       title: "Background streaming",
                       disabled: state.streamingState.isStreaming || state.streamingState.inSettings,
                       value: state.streamingState.streamingSettings.serviceInBackground,
@@ -390,6 +389,7 @@ class ListDrawer<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       child: Scaffold(
         appBar: AppBar(title: Text(title),),
@@ -401,16 +401,18 @@ class ListDrawer<T> extends StatelessWidget {
                 return ListView(
                   children: list.map((item) =>
                       InkWell(
-                        onTap: state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
-                          Navigator.of(context).pop();
-                          if (onSelected!=null) {
-                            onSelected!(item);
-                          }
-                        },
+                        onTap: null,//state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
+                          // Navigator.of(context).pop();
+                          // if (onSelected!=null) {
+                          //   onSelected!(item);
+                          // }
+                        // },
                         child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 6),
                             decoration: BoxDecoration(
-                              color: item == selectedItem ? ((checkIsStreaming && state.streamingState.isStreaming) ? Colors.grey : Colors.lightBlueAccent) : const Color.fromRGBO(0, 0, 0, 0),
+                              color: item == selectedItem ?
+                              ((checkIsStreaming && state.streamingState.isStreaming) ? Colors.grey : Colors.lightBlueAccent) :
+                              const Color.fromRGBO(0, 0, 0, 0),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB (16,8,0,8),

@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 class SettingsSwitch extends StatelessWidget {
   const SettingsSwitch({
     Key? key,
-    required this.iconData,
     required this.title,
     required this.disabled,
     required this.value,
     required this.onChanged
   }) : super(key: key);
 
-  final IconData iconData;
   final String title;
   final bool disabled;
   final bool value;
@@ -21,7 +19,7 @@ class SettingsSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  SettingsRow(
-      left: Icon(iconData),
+      left: null,
       title: Text(title, ),
       right: CupertinoSwitch(
         activeColor: Colors.blue,
@@ -116,15 +114,18 @@ class SettingsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    ;
     return InkWell(
       onTap: onTap,
       child: Container(
         decoration: decoration,
         padding: const EdgeInsets.all(16),
         child: IconTheme(
-          data: _isActive ? const IconThemeData(color: Colors.black) : const IconThemeData(color: Colors.black45),
+          data: IconThemeData(color: _isActive ? DefaultTextStyle.of(context).style.color : Theme.of(context).disabledColor),
+
           child: DefaultTextStyle(
-            style: _isActive ? const TextStyle(color: Colors.black) : const TextStyle(color: Colors.black45),
+            style: TextStyle(color: _isActive ? null : Theme.of(context).disabledColor),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
