@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kstream/streaming/bloc/cubit.dart';
 import 'package:kstream/streaming/camera_screen.dart';
 
 import 'package:kstream/widgets/widgets.dart';
@@ -58,7 +59,14 @@ class MyApp extends StatelessWidget {
               permissionState: PermissionState.unknown,
               repository: context.read<Repository>(),
             ),
-          )
+          ),
+
+          BlocProvider<MyStreamingCubit>(
+            create: (BuildContext context) => MyStreamingCubit(
+              context.read<Repository>(),
+            ),
+          ),
+
         ],
         child: MaterialApp(
 
@@ -99,7 +107,7 @@ class MainScreen extends StatelessWidget {
             }
 
             if (state.micStatus.isGranted && state.camStatus.isGranted){
-              return const CameraScreen();
+              return CameraScreen();
             }
 
             return PermissionsScreen(permissionState: state,);

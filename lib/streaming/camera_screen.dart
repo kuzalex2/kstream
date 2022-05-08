@@ -14,50 +14,10 @@ import 'bloc/cubit.dart';
 
 
 
+
+
 class CameraScreen extends StatelessWidget {
-  const CameraScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<MyStreamingCubit>(
-            create: (BuildContext context) => MyStreamingCubit(
-              context.read<Repository>(),
-            ),
-          )
-        ],
-        child: _CameraScreen()
-    );
-  }
-}
-
-
-class ToastWidget extends StatelessWidget {
-  final String title;
-  const ToastWidget({Key? key, required this.title}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(24)),
-        color: Colors.black38,
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
-        ),
-      ],),
-    );
-  }
-}
-
-
-class _CameraScreen extends StatelessWidget {
-  _CameraScreen({Key? key}) : super(key: key);
+  CameraScreen({Key? key}) : super(key: key);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -86,7 +46,7 @@ class _CameraScreen extends StatelessWidget {
             return Scaffold(
               key: _scaffoldKey,
 
-              drawer: state.initialized ? CameraSettingsDrawer(streamer: context.read<MyStreamingCubit>().streamer) : null,
+              drawer: CameraSettingsDrawer() ,
               body: Stack(
                 fit: StackFit.expand,
                 alignment: Alignment.topCenter,
@@ -374,11 +334,31 @@ class LiveButton extends StatelessWidget {
     );
   }
 }
-//
-//
 
 
 
+
+class ToastWidget extends StatelessWidget {
+  final String title;
+  const ToastWidget({Key? key, required this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+        color: Colors.black38,
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Column(children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.red),
+        ),
+      ],),
+    );
+  }
+}
 
 
 
