@@ -401,12 +401,12 @@ class ListDrawer<T> extends StatelessWidget {
                 return ListView(
                   children: list.map((item) =>
                       InkWell(
-                        onTap: null,//state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
-                          // Navigator.of(context).pop();
-                          // if (onSelected!=null) {
-                          //   onSelected!(item);
-                          // }
-                        // },
+                        onTap: state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
+                          Navigator.of(context).pop();
+                          if (onSelected!=null) {
+                            onSelected!(item);
+                          }
+                        },
                         child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 6),
                             decoration: BoxDecoration(

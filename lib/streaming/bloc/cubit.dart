@@ -34,9 +34,6 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
   _init() async {
 
 
-
-    repository.sharedPreferences;
-
     try {
       streamer = await FlutterRtmpStreamer.init(
           repository.sharedPreferences.streamingSettings
