@@ -1,5 +1,5 @@
 
-part of 'cubit.dart';
+part of 'settings_cubit.dart';
 
 
 class SettingsState extends Equatable {

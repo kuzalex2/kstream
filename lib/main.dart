@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:kstream/settings/bloc/cubit.dart';
-import 'package:kstream/streaming/bloc/cubit.dart';
-import 'package:kstream/streaming/camera_screen.dart';
+import 'package:kstream/screens/camera_screen.dart';
 
 import 'package:kstream/widgets/widgets.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kstream/permission/bloc/cubit.dart';
-import 'package:kstream/permission/permission_screen.dart';
+import 'package:kstream/screens/permissions/permission_screen.dart';
 import 'package:kstream/repository/repository.dart';
 
 import 'bloc_observer.dart';
+
+import 'package:kstream/bloc/permission/permission_cubit.dart';
+import 'package:kstream/bloc/settings/settings_cubit.dart';
+import 'package:kstream/bloc/streaming/streaming_cubit.dart';
+
+
 
 
 const bool isProduction = bool.fromEnvironment('dart.vm.product');

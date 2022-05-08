@@ -1,5 +1,5 @@
 
-part of 'cubit.dart';
+part of 'permission_cubit.dart';
 
 
 

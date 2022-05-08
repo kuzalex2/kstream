@@ -1,5 +1,5 @@
 
-part of 'cubit.dart';
+part of 'streaming_cubit.dart';
 
 enum ConnectState {
   no,

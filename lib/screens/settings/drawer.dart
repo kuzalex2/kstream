@@ -2,15 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp/model.dart';
-import 'package:kstream/settings/utils.dart';
-import 'package:kstream/settings/widgets.dart';
-import 'package:kstream/streaming/bloc/cubit.dart';
 
-import '../repository/repository.dart';
-import '../widgets/widgets.dart';
-import 'bloc/cubit.dart';
 import 'dart:io' show Platform;
 import 'package:collection/collection.dart';
+import 'package:kstream/screens/settings/widgets.dart';
+import 'package:kstream/widgets/widgets.dart';
+
+import 'utils.dart';
+
+import 'package:kstream/bloc/settings/settings_cubit.dart';
 
 
 

@@ -10,7 +10,7 @@ import 'package:flutter_rtmp_streamer/flutter_rtmp_streamer.dart';
 import 'package:kstream/repository/repository.dart';
 
 
-part 'state.dart';
+part 'streaming_state.dart';
 
 
 

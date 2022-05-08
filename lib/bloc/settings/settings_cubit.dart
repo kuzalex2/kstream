@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp_streamer.dart';
 import 'package:kstream/repository/repository.dart';
 
-part 'state.dart';
+part 'settings_state.dart';
 
 
 class SettingsCubit extends Cubit<SettingsState>  {

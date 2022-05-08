@@ -2,11 +2,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kstream/permission/permission_button.dart';
-import 'package:kstream/permission/permission_icon.dart';
+import 'package:kstream/screens/permissions/permission_button.dart';
+import 'package:kstream/screens/permissions/permission_icon.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'bloc/cubit.dart';
+import 'package:kstream/bloc/permission/permission_cubit.dart';
 
 
 

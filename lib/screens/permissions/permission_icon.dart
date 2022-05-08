@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:unicons/unicons.dart';
 
-import 'bloc/cubit.dart';
+
+import 'package:kstream/bloc/permission/permission_cubit.dart';
 
 
 enum PermissionType {

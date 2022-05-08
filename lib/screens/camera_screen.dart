@@ -2,15 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kstream/screens/settings/drawer.dart';
 
 import 'package:kstream/widgets/widgets.dart';
 
-import 'package:kstream/repository/repository.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp_streamer.dart';
 import 'package:unicons/unicons.dart';
 
-import '../settings/drawer.dart';
-import 'bloc/cubit.dart';
+import 'package:kstream/bloc/streaming/streaming_cubit.dart';
+
+
 
 
 
@@ -46,7 +47,7 @@ class CameraScreen extends StatelessWidget {
             return Scaffold(
               key: _scaffoldKey,
 
-              drawer: CameraSettingsDrawer() ,
+              drawer: const CameraSettingsDrawer() ,
               body: Stack(
                 fit: StackFit.expand,
                 alignment: Alignment.topCenter,

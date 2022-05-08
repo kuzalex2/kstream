@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'bloc/cubit.dart';
+
+import 'package:kstream/bloc/permission/permission_cubit.dart';
 
 
 
