@@ -14,45 +14,38 @@ part 'state.dart';
 
 
 
-class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObserver {
+class MyStreamingCubit extends Cubit<MyStreamingState>  {
 
-  // AppLifecycleState? _prevState;
   final Repository repository;
-  late final FlutterRtmpStreamer streamer;
+  FlutterRtmpStreamer? _streamer;
 
   StreamSubscription? _sub1;
   StreamSubscription? _sub2;
 
 
 
-  MyStreamingCubit(this.repository) : super(MyStreamingState.empty) {
-    WidgetsBinding.instance?.addObserver(this);
+  MyStreamingCubit({required this.repository}) : super(MyStreamingState.empty) {
 
     _init();
   }
 
   _init() async {
 
-
     try {
-      streamer = await FlutterRtmpStreamer.init(
-          repository.sharedPreferences.streamingSettings
-          // .copyWith(
-              // resolution: const Resolution(720, 720),
-          // )
-      );
+      _streamer = await repository.streamerRepository.streamer();
+
     } catch (e) {
       emit(state.copyWith(fatalError: e.toString(), initialized: false));
       return;
     }
 
-    emit(state.copyWith(initialized: true, resolution: streamer.state.resolution, audioMuted: streamer.state.isAudioMuted));
+    emit(state.copyWith(initialized: true, resolution: _streamer!.state.resolution, audioMuted: _streamer!.state.isAudioMuted));
 
     await Future.delayed(const Duration(seconds: 1));
-    emit(state.copyWith(showLiveButton: state.initialized && !streamer.state.isStreaming));
+    emit(state.copyWith(showLiveButton: state.initialized && !_streamer!.state.isStreaming));
 
 
-    _sub1 = streamer.stateStream.listen((streamingState) {
+    _sub1 = _streamer!.stateStream.listen((streamingState) {
 
       final ConnectState connectState;
       if ( streamingState.isRtmpConnected ) {
@@ -71,19 +64,18 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
       ));
     });
 
-    _sub2 = streamer.notificationStream.listen(
+    _sub2 = _streamer!.notificationStream.listen(
             (event) =>
                 emit(state.copyWith(error: event.description))
     );
   }
 
   startStream() {
-    if (!state.initialized) {
-      return;
-    }
+
 
     try {
-      streamer.startStream(
+
+      _streamer?.startStream(
           uri: "rtmp://flutter-webrtc.kuzalex.com/live",
           streamName: "one"
       );
@@ -95,12 +87,8 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   stopStream() {
 
-    if (!state.initialized) {
-      return;
-    }
-
     try {
-      streamer.stopStream();
+      _streamer?.stopStream();
 
     } catch(e){
       emit(state.copyWith(error: e.toString()));
@@ -110,13 +98,13 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   switchCamera() {
 
-    if (!state.initialized) {
+    if (_streamer == null) {
       return;
     }
 
     try {
-      streamer.changeStreamingSettings(streamer.state.streamingSettings.copyWith(
-        cameraFacing: streamer.state.streamingSettings.cameraFacing == StreamingCameraFacing.back
+      _streamer!.changeStreamingSettings(_streamer!.state.streamingSettings.copyWith(
+        cameraFacing: _streamer!.state.streamingSettings.cameraFacing == StreamingCameraFacing.back
             ? StreamingCameraFacing.front : StreamingCameraFacing.back
       ));
 
@@ -128,13 +116,13 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   switchMicrophone() {
 
-    if (!state.initialized) {
+    if (_streamer == null) {
       return;
     }
 
     try {
-      streamer.changeStreamingSettings(streamer.state.streamingSettings.copyWith(
-          muteAudio: !streamer.state.isAudioMuted
+      _streamer!.changeStreamingSettings(_streamer!.state.streamingSettings.copyWith(
+          muteAudio: !_streamer!.state.isAudioMuted
       ));
 
     } catch(e){
@@ -148,17 +136,14 @@ class MyStreamingCubit extends Cubit<MyStreamingState> with  WidgetsBindingObser
 
   @override
   Future<void> close() {
-    WidgetsBinding.instance?.removeObserver(this);
     _sub1?.cancel();
     _sub2?.cancel();
     _sub1 = null;
     _sub2 = null;
+    _streamer = null;
     return super.close();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-  }
 
   consumeError(){
     emit(state.copyWith(error: ""));

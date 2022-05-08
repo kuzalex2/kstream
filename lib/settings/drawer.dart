@@ -14,25 +14,10 @@ import 'package:collection/collection.dart';
 
 
 
+
+
+
 class CameraSettingsDrawer extends StatelessWidget {
-
-  const CameraSettingsDrawer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-
-    return BlocProvider<SettingsCubit>(
-      create: (BuildContext context) => SettingsCubit(
-        repository: context.read<Repository>(),
-        streamer: context.read<MyStreamingCubit>().streamer,
-      ),
-      child: const CameraSettingsDrawerInternal()
-    );
-  }
-}
-
-
-class CameraSettingsDrawerInternal extends StatelessWidget {
 
   static const videoBitrates = [
     NamedValue(1 * 1024  * 1024,"1 Mbit/s"), // 360p
@@ -89,7 +74,7 @@ class CameraSettingsDrawerInternal extends StatelessWidget {
   ];
 
   // final FlutterRtmpStreamer streamer;
-  const CameraSettingsDrawerInternal({Key? key/*, required this.streamer*/})
+  const CameraSettingsDrawer({Key? key/*, required this.streamer*/})
       : super(key: key)
   ;
 
@@ -384,53 +369,45 @@ class ListDrawer<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
+      Drawer(
+        child: Scaffold(
+          appBar: AppBar(title: Text(title),),
+          body: BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, state) {
 
-    BlocProvider<SettingsCubit>(
-      create: (BuildContext context) => SettingsCubit(
-        repository: context.read<Repository>(),
-        streamer: context.read<MyStreamingCubit>().streamer,
-      ),
-      child: Builder(
-        builder: (BuildContext context) {
-          return Drawer(
-            child: Scaffold(
-              appBar: AppBar(title: Text(title),),
-              body: BlocBuilder<SettingsCubit, SettingsState>(
-                  builder: (context, state) {
+                return ListView(
+                  children: list.map((item) =>
+                      InkWell(
+                        onTap: state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
+                          Navigator.of(context).pop(item);
 
-                    return ListView(
-                      children: list.map((item) =>
-                          InkWell(
-                            onTap: state.streamingState.inSettings || (checkIsStreaming && state.streamingState.isStreaming) ? null : () {
-                              Navigator.of(context).pop(item);
+                          context.read<SettingsCubit>().changeStreamingSettings(
+                              onApply(state.streamingState.streamingSettings, item)
+                          );
 
-                              context.read<SettingsCubit>().changeStreamingSettings(
-                                  onApply(state.streamingState.streamingSettings, item)
-                              );
-
-                            },
-                            child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: item == selectedItem ?
-                                  ((checkIsStreaming && state.streamingState.isStreaming) ? Colors.grey : Colors.lightBlueAccent) :
-                                  const Color.fromRGBO(0, 0, 0, 0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB (16,8,0,8),
-                                  child: Text(item.toString()),
-                                )
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            decoration: BoxDecoration(
+                              color: item == selectedItem ?
+                              ((checkIsStreaming && state.streamingState.isStreaming) ? Colors.grey : Colors.lightBlueAccent) :
+                              const Color.fromRGBO(0, 0, 0, 0),
                             ),
-                          )
-                      ).toList(),
-                    );
-                  }
-              ),
-            ),
-          );
-        },
-      ),
-    );
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB (16,8,0,8),
+                              child: Text(item.toString()),
+                            )
+                        ),
+                      )
+                  ).toList(),
+                );
+              }
+          ),
+        ),
+      );
+
+
+
 }
 
 class FutureListDrawer<T> extends StatelessWidget {

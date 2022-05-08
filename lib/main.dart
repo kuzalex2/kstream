@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kstream/settings/bloc/cubit.dart';
 import 'package:kstream/streaming/bloc/cubit.dart';
 import 'package:kstream/streaming/camera_screen.dart';
 
@@ -63,7 +64,13 @@ class MyApp extends StatelessWidget {
 
           BlocProvider<MyStreamingCubit>(
             create: (BuildContext context) => MyStreamingCubit(
-              context.read<Repository>(),
+              repository: context.read<Repository>(),
+            ),
+          ),
+
+          BlocProvider<SettingsCubit>(
+            create: (BuildContext context) => SettingsCubit(
+              repository: context.read<Repository>(),
             ),
           ),
 

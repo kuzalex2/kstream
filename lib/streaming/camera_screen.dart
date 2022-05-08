@@ -164,7 +164,7 @@ class FatalErrorWidget extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: Colors.black,
-        child: Center(child: Text(error, textAlign: TextAlign.center,),),
+        child: Center(child: Text(error, textAlign: TextAlign.center, style: const TextStyle(color: Colors.red),),),
       ),
     );
   }

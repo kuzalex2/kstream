@@ -2,7 +2,7 @@
 part of 'repository.dart';
 
 
-class DeviceInfoProvider {
+class DeviceInfoRepository {
 
   late final PackageInfo packageInfo;
 

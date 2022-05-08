@@ -7,20 +7,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'shared_preferences_repository.dart';
 part 'device_info.dart';
+part 'streamer.dart';
 
 
 class Repository {
 
   late final SharedPreferencesRepository sharedPreferences;
-  late final DeviceInfoProvider deviceInfo;
+  late final DeviceInfoRepository deviceInfo;
+  late final StreamerRepository streamerRepository;
 
   init() async {
 
     sharedPreferences = SharedPreferencesRepository();
-    deviceInfo = DeviceInfoProvider();
+    deviceInfo = DeviceInfoRepository();
 
     await sharedPreferences.init();
     await deviceInfo.init();
+
+    streamerRepository = StreamerRepository(sharedPreferences);
   }
 
 
