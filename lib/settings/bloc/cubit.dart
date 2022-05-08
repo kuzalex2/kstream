@@ -36,6 +36,8 @@ class SettingsCubit extends Cubit<SettingsState>  {
     repository.sharedPreferences.streamingSettings = newValue;
   }
 
+  Future<BackAndFrontResolutions> getResolutions() => streamer.getResolutions();
+
 
 
   @override

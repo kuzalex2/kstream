@@ -37,14 +37,14 @@ class SettingsOption extends StatelessWidget {
   const SettingsOption({
     Key? key,
     this.iconData,
-    required this.text,
-    this.rightText,
+    required this.title,
+    this.rightTitle,
     required this.disabled,
     required this.onTap,
   }) : super(key: key);
   final IconData? iconData;
-  final String text;
-  final String? rightText;
+  final String title;
+  final String? rightTitle;
 
   final bool disabled;
   final Function() onTap;
@@ -57,8 +57,8 @@ class SettingsOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return  SettingsRow(
       left: iconData!=null ? Icon(iconData) : null,
-      title: Text(text),
-      rightTitle: rightText!=null ? Text("( $rightText )") : null,
+      title: Text(title),
+      rightTitle: rightTitle!=null ? Text("( $rightTitle )") : null,
 
       onTap: disabled ? null : onTap,
       right: const Icon(Icons.arrow_right),
