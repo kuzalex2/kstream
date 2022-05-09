@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kstream/models/stream_endpoint.dart';
@@ -21,7 +22,10 @@ class StreamingEndpointsWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Text("Streaming Endpoints:"),
+            Padding(
+              padding: EdgeInsets.only(bottom: 24.0),
+              child: Text("Streaming Endpoints:"),
+            ),
             _EndpointsList(),
           ],
         ),
@@ -42,10 +46,33 @@ class _EndpointsList extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
 
-          children: state.endpointsList.list.map((streamEndpoint) =>
-              EndpointRow(streamEndpoint)).toList(),
+          children: [
+            AddEndpointRow(disabled: state.streamingState.isStreaming),
+
+            ...state.endpointsList.list.map((streamEndpoint) =>
+              EndpointRow(streamEndpoint, disabled: state.streamingState.isStreaming,)).toList(),
+          ],
         );
       }
+    );
+  }
+}
+
+class AddEndpointRow extends StatelessWidget {
+  const AddEndpointRow({Key? key, required this.disabled}) : super(key: key);
+  final bool disabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: RaisedButton(
+        color: const Color.fromRGBO(252, 183, 19, 1),
+        padding:const EdgeInsets.all(14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0),),
+        onPressed: disabled ? null : () {  },
+        child: const Text("ADD"),
+      ),
     );
   }
 }
@@ -53,20 +80,82 @@ class _EndpointsList extends StatelessWidget {
 
 class EndpointRow extends StatelessWidget {
   final StreamEndpoint endpoint;
-  const EndpointRow(this.endpoint,{Key? key}) : super(key: key);
+  final bool disabled;
+  const EndpointRow(this.endpoint,{Key? key, required this.disabled}) : super(key: key);
+
+
+  Future showConfirmationDialog(BuildContext context) => showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: ThemeData(
+              brightness: Brightness.light,
+          ),
+          child: CupertinoAlertDialog(
+            title: const Text("Delete this endpoint?"),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                child: const Text('No'),
+                onPressed: () => Navigator.of(context).pop(false),
+                isDefaultAction: true,
+              ),
+              CupertinoDialogAction(
+                child: const Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                isDefaultAction: false,
+              ),
+            ],
+          ),
+        );
+      });
+
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.red,
-      child: SettingsSwitch(title: "${endpoint.name}", disabled: false, value: endpoint.active, onChanged: (value) {
-        if (value){
-          context.read<SettingsCubit>().setActiveEndpoint(endpoint);
-        } else {
-          context.read<SettingsCubit>().setActiveEndpoint(null);
+
+    final child = SettingsSwitch(title: "${endpoint.name}", disabled: disabled, value: endpoint.active, onChanged: (value) {
+      if (value){
+        context.read<SettingsCubit>().setActiveEndpoint(endpoint);
+      } else {
+        context.read<SettingsCubit>().setActiveEndpoint(null);
+      }
+    });
+
+    if (disabled) {
+      return child;
+    }
+
+    return Dismissible(
+
+      key: ValueKey(endpoint),
+
+      onDismissed: (direction) {
+        context.read<SettingsCubit>().deleteEndpoint(endpoint);
+      },
+
+      confirmDismiss: (DismissDirection dismissDirection) async {
+        switch(dismissDirection) {
+
+          case DismissDirection.endToStart:
+            return await showConfirmationDialog(context);
+          case DismissDirection.startToEnd:
+          case DismissDirection.horizontal:
+          case DismissDirection.vertical:
+          case DismissDirection.up:
+          case DismissDirection.down:
         }
-      })
-      // child: Text("${endpoint.name}"),
+        return false;
+      },
+
+      background: Container(color: const Color.fromRGBO(50, 159, 217, 0.16)),
+      secondaryBackground: Container(color: Colors.red),
+
+
+
+      child: child,
     );
   }
 }
