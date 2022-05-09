@@ -21,3 +21,16 @@ Map<String, dynamic> _$StreamEndpointToJson(StreamEndpoint instance) =>
       'key': instance.key,
       'active': instance.active,
     };
+
+StreamEndpointsList _$StreamEndpointsListFromJson(Map<String, dynamic> json) =>
+    StreamEndpointsList(
+      list: (json['list'] as List<dynamic>)
+          .map((e) => StreamEndpoint.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$StreamEndpointsListToJson(
+        StreamEndpointsList instance) =>
+    <String, dynamic>{
+      'list': instance.list,
+    };

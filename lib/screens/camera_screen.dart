@@ -21,6 +21,31 @@ class CameraScreen extends StatelessWidget {
   CameraScreen({Key? key}) : super(key: key);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future showAddEndpointDialog(BuildContext context) => showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          content: const Text("Would you like to add streaming endpoint?"),
+          actions: <CupertinoDialogAction>[
+            CupertinoDialogAction(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+              isDefaultAction: false,
+            ),
+            CupertinoDialogAction(
+              child: const Text('Add'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _scaffoldKey.currentState?.openDrawer();
+              },
+              isDefaultAction: true,
+            ),
+          ],
+        );
+      });
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -29,108 +54,129 @@ class CameraScreen extends StatelessWidget {
         value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         ),
-      child: BlocConsumer<MyStreamingCubit, MyStreamingState>(
+      child: BlocListener<MyStreamingCubit, MyStreamingState>(
 
-          listenWhen: (previous, current) => current.error.isNotEmpty && previous.error!=current.error,
-          listener: (context, state){
+        ///
+        listenWhen: (previous, current) => current.showOpenSettings && previous.showOpenSettings!=current.showOpenSettings,
 
-            AppToast.show(context, child: ToastWidget(title: state.error,));
-            context.read<MyStreamingCubit>().consumeError();
-          },
+        listener: (context, state){
 
-          builder: (context, state) {
+          WidgetsBinding.instance!.addPostFrameCallback((_) => showAddEndpointDialog(context));
+          context.read<MyStreamingCubit>().afterOpenSettingsHasBeenShown();
+        },
 
-            if (state.fatalError.isNotEmpty) {
-              return FatalErrorWidget(state.fatalError);
+        child: BlocConsumer<MyStreamingCubit, MyStreamingState>(
+
+            ///
+            listenWhen: (previous, current) => current.error.isNotEmpty && previous.error!=current.error,
+            listener: (context, state){
+
+              AppToast.show(context, child: ToastWidget(title: state.error,));
+              context.read<MyStreamingCubit>().consumeError();
+            },
+
+            builder: (context, state) {
+
+              if (state.fatalError.isNotEmpty) {
+                return FatalErrorWidget(state.fatalError);
+              }
+
+              return Scaffold(
+                key: _scaffoldKey,
+
+                drawer: const CameraSettingsDrawer() ,
+                body: Stack(
+                  fit: StackFit.expand,
+                  alignment: Alignment.topCenter,
+                  children:  [
+
+                    Container(color: Colors.black,),
+
+                    if (state.initialized)
+                      Center(
+                        child: AspectRatio(
+                          aspectRatio: state.resolution.width == 0 ? 1.0 : 1.0 * state.resolution.height / state.resolution.width,
+                          child: Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+
+                              Container(
+                                child: const FlutterRtmpCameraView(),
+                              ),
+
+                              const Positioned(
+                                  top: 0,
+                                  child: TopGradient(),
+                              ),
+
+                              const Positioned(
+                                  bottom: 0,
+                                  child: BottomGradient()
+                              ),
+
+                              Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: StreamingStatusWidget(connectState: state.connectState)
+                              ),
+
+                              Positioned(
+                                  bottom: 0,
+                                  child: Row(children: [
+
+
+                                    StreamControlButton(
+                                      iconData: state.audioMuted ? UniconsLine.microphone_slash : UniconsLine.microphone,
+                                      enabled: true,
+                                      activeColor: state.audioMuted ? Colors.red : null,
+                                      onPressed: () =>
+                                        context.read<MyStreamingCubit>().switchMicrophone(),
+                                    ),
+
+                                    StreamControlButton(
+                                      iconData: UniconsLine.sync_icon,
+                                      enabled: true,
+                                      onPressed: () => context.read<MyStreamingCubit>().switchCamera(),
+                                    ),
+
+                                    StreamControlButton(
+                                      iconData: UniconsLine.setting,
+                                      enabled: true,
+                                      onPressed: () =>
+                                      ///FIXME
+
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (_) => CameraSettingsDrawer(),
+                                          )),
+
+                                          // _scaffoldKey.currentState?.openDrawer(),
+
+                                    ),
+
+
+
+                                  ],),
+                              ),
+
+
+                              LiveButton(enabled: state.showLiveButton, position: 50,),
+
+                            ],
+                          ),
+                        )
+                      ),
+                  ],
+                ),
+              );
             }
-
-            return Scaffold(
-              key: _scaffoldKey,
-
-              drawer: const CameraSettingsDrawer() ,
-              body: Stack(
-                fit: StackFit.expand,
-                alignment: Alignment.topCenter,
-                children:  [
-
-                  Container(color: Colors.black,),
-
-                  if (state.initialized)
-                    Center(
-                      child: AspectRatio(
-                        aspectRatio: state.resolution.width == 0 ? 1.0 : 1.0 * state.resolution.height / state.resolution.width,
-                        child: Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-
-                            Container(
-                              child: const FlutterRtmpCameraView(),
-                            ),
-
-                            const Positioned(
-                                top: 0,
-                                child: TopGradient(),
-                            ),
-
-                            const Positioned(
-                                bottom: 0,
-                                child: BottomGradient()
-                            ),
-
-                            Positioned(
-                                top: 10,
-                                right: 10,
-                                child: StreamingStatusWidget(connectState: state.connectState)
-                            ),
-
-                            Positioned(
-                                bottom: 0,
-                                child: Row(children: [
-
-
-                                  StreamControlButton(
-                                    iconData: state.audioMuted ? UniconsLine.microphone_slash : UniconsLine.microphone,
-                                    enabled: true,
-                                    activeColor: state.audioMuted ? Colors.red : null,
-                                    onPressed: () =>
-                                      context.read<MyStreamingCubit>().switchMicrophone(),
-                                  ),
-
-                                  StreamControlButton(
-                                    iconData: UniconsLine.sync_icon,
-                                    enabled: true,
-                                    onPressed: () => context.read<MyStreamingCubit>().switchCamera(),
-                                  ),
-
-                                  StreamControlButton(
-                                    iconData: UniconsLine.setting,
-                                    enabled: true,
-                                    onPressed: () =>
-                                        _scaffoldKey.currentState?.openDrawer(),
-
-                                  ),
-
-
-
-                                ],),
-                            ),
-
-
-                            LiveButton(enabled: state.showLiveButton, position: 50,),
-
-                          ],
-                        ),
-                      )
-                    ),
-                ],
-              ),
-            );
-          }
-        ),
+          ),
+      ),
 
     );
   }
 }
+
+
 
 class StreamControlButton extends StatelessWidget {
   final IconData iconData;

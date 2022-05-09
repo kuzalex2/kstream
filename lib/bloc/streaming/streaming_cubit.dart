@@ -72,12 +72,19 @@ class MyStreamingCubit extends Cubit<MyStreamingState>  {
 
   startStream() {
 
+    final activePoint = repository.streamerRepository.streamEndpointsList.activePoint;
+
+    if (activePoint==null){
+      emit(state.copyWith(showOpenSettings: true));
+      return;
+    }
+
 
     try {
 
       _streamer?.startStream(
-          uri: "rtmp://flutter-webrtc.kuzalex.com/live",
-          streamName: "one"
+          uri: activePoint.url,
+          streamName: activePoint.key,
       );
     } catch(e){
       emit(state.copyWith(error: e.toString()));
@@ -147,6 +154,10 @@ class MyStreamingCubit extends Cubit<MyStreamingState>  {
 
   consumeError(){
     emit(state.copyWith(error: ""));
+  }
+
+  afterOpenSettingsHasBeenShown() {
+    emit(state.copyWith(showOpenSettings: false));
   }
 
 
