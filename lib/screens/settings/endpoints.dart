@@ -6,6 +6,8 @@ import 'package:kstream/models/stream_endpoint.dart';
 import 'package:kstream/bloc/settings/settings_cubit.dart';
 import 'package:kstream/screens/settings/widgets.dart';
 
+import 'edit_endpoint.dart';
+
 class StreamingEndpointsWidget extends StatelessWidget {
   const StreamingEndpointsWidget({Key? key}) : super(key: key);
 
@@ -70,7 +72,13 @@ class AddEndpointRow extends StatelessWidget {
         color: const Color.fromRGBO(252, 183, 19, 1),
         padding:const EdgeInsets.all(14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0),),
-        onPressed: disabled ? null : () {  },
+        onPressed: disabled ? null : () {
+          Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => const EditEndpointScreen()
+              )
+          );
+        },
         child: const Text("ADD"),
       ),
     );
@@ -155,7 +163,16 @@ class EndpointRow extends StatelessWidget {
 
 
 
-      child: child,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (_) => const EditEndpointScreen()
+              )
+          );
+        },
+        child: child
+      ),
     );
   }
 }
