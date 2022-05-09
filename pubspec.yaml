@@ -20,6 +20,7 @@ dependencies:
   unicons: ^2.0.1
   package_info: ^2.0.2
   uuid: ^3.0.6
+  json_annotation: ^4.5.0
 
 #  flutter_rtmp_streamer:
 #    path: ../flutter_rtmp_streamer/
@@ -38,6 +39,8 @@ dev_dependencies:
 
   flutter_lints: ^1.0.0
   flutter_native_splash: ^1.2.1
+  build_runner: ^2.1.10
+  json_serializable: ^6.2.0
 
 flutter:
 
