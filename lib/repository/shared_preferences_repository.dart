@@ -65,12 +65,38 @@ class SharedPreferencesRepository {
       try {
         return StreamingSettings.fromJson(jsonDecode(saved));
 
-      } catch (_){
+      } catch (e){
+        debugPrint("get streamingSettings failed: $e");
 
       }
     }
 
     return StreamingSettings.initial;
+  }
+
+
+
+  ///
+  /// Flutter RTMP Streamer Settings
+  ///
+
+  set streamEndpointsList(StreamEndpointsList value) =>
+    _prefs.setString("streamEndpointsList", jsonEncode(value.toJson()));
+
+
+  StreamEndpointsList get streamEndpointsList {
+    final saved = _prefs.getString("streamEndpointsList");
+    if (saved != null) {
+      try {
+        return StreamEndpointsList.fromJson( json.decode(saved) );
+
+      } catch (e){
+        debugPrint("get streamEndpointsList failed: $e");
+
+      }
+    }
+
+    return StreamEndpointsList.empty;
   }
 
 

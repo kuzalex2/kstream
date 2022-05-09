@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:kstream/screens/settings/widgets.dart';
 import 'package:kstream/widgets/widgets.dart';
 
+import 'endpoints.dart';
 import 'utils.dart';
 
 import 'package:kstream/bloc/settings/settings_cubit.dart';
@@ -95,6 +96,12 @@ class CameraSettingsDrawer extends StatelessWidget {
                 children: [
 
 
+                  const StreamingEndpointsWidget(),
+
+
+                  const SettingsLine(text: "VIDEO"),
+                  //
+
                   ///
                   ///
                   /// Background streaming
@@ -110,9 +117,6 @@ class CameraSettingsDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  const SettingsLine(text: "VIDEO"),
-                  //
 
                   const VideoResolutionsOption(),
 
@@ -460,6 +464,8 @@ class FutureListDrawer<T> extends StatelessWidget {
     );
   }
 }
+
+
 
 
 

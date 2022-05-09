@@ -8,6 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rtmp_streamer/flutter_rtmp_streamer.dart';
 import 'package:kstream/repository/repository.dart';
 
+import '../../models/stream_endpoint.dart';
+import 'package:collection/collection.dart';
+
+
 part 'settings_state.dart';
 
 
@@ -18,13 +22,20 @@ class SettingsCubit extends Cubit<SettingsState>  {
 
   StreamSubscription? _sub1;
 
-  SettingsCubit({required this.repository}) : super(const SettingsState(streamingState: StreamingState.empty)) {
+  SettingsCubit({required this.repository}) :
+        super(SettingsState(
+          streamingState: StreamingState.empty,
+          endpointsList: repository.streamerRepository.streamEndpointsList
+      ))
+  {
     _init();
   }
 
   _init() async {
+
     try {
       _streamer = await repository.streamerRepository.streamer();
+
     } catch (e) {
       return;
     }
@@ -55,6 +66,39 @@ class SettingsCubit extends Cubit<SettingsState>  {
 
     return _streamer!.getResolutions();
   }
+
+  setActiveEndpoint(StreamEndpoint? value) {
+
+    final newList = StreamEndpointsList(
+        list: state.endpointsList.list.map((e) {
+          if (e == value) {
+            return e.copyWith(active: true);
+          }
+
+          return e.active ? e.copyWith(active: false): e;
+        }).toList()
+    );
+
+    repository.streamerRepository.streamEndpointsList = newList;
+
+    emit(state.copyWith(endpointsList: newList));
+
+  }
+
+  // unsetActiveEndpoint() {
+  //
+  //   final newList = StreamEndpointsList(
+  //       list: state.endpointsList.list.map((e) {
+  //         return e.active ? e.copyWith(active: false): e;
+  //       }).toList()
+  //   );
+  //
+  //   repository.streamerRepository.streamEndpointsList = newList;
+  //
+  //   emit(state.copyWith(endpointsList: newList));
+  // }
+
+
 
 
 

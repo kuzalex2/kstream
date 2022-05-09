@@ -5,7 +5,7 @@ part of 'settings_cubit.dart';
 class SettingsState extends Equatable {
 
   final StreamingState streamingState;
-  // final StreamingSettings streamingSettings;
+  final StreamEndpointsList endpointsList;
 
   // final bool initialized;
   // final String error;
@@ -19,7 +19,7 @@ class SettingsState extends Equatable {
   //
   const SettingsState( {
     required this.streamingState,
-    // required this.streamingSettings,
+    required this.endpointsList,
   //   required this.fatalError,
   //   required this.showLiveButton,
   //   required this.connectState,
@@ -39,7 +39,7 @@ class SettingsState extends Equatable {
   //
   SettingsState copyWith({
     StreamingState? streamingState,
-    // StreamingSettings? streamingSettings,
+    StreamEndpointsList? endpointsList,
 
   //   String? fatalError,
   //   bool? showLiveButton,
@@ -50,7 +50,7 @@ class SettingsState extends Equatable {
   }) {
     return SettingsState(
       streamingState: streamingState ?? this.streamingState,
-      // streamingSettings: streamingSettings ?? this.streamingSettings,
+      endpointsList: endpointsList ?? this.endpointsList,
   //     fatalError: fatalError ?? this.fatalError,
   //     showLiveButton: showLiveButton ?? this.showLiveButton,
   //     connectState: connectState ?? this.connectState,
@@ -62,7 +62,7 @@ class SettingsState extends Equatable {
   @override
   List<Object> get props => [
     streamingState,
-    // streamingSettings,
+    endpointsList,
     // showLiveButton,
     // fatalError,
     // connectState,
