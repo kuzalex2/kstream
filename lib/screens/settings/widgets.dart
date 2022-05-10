@@ -19,7 +19,6 @@ class SettingsSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  SettingsRow(
-      left: null,
       title: Text(title, overflow: TextOverflow.ellipsis, softWrap: false,),
       right: CupertinoSwitch(
         activeColor: Colors.blue,
@@ -34,13 +33,11 @@ class SettingsSwitch extends StatelessWidget {
 class SettingsOption extends StatelessWidget {
   const SettingsOption({
     Key? key,
-    this.iconData,
     required this.title,
     this.rightTitle,
     required this.disabled,
     required this.onTap,
   }) : super(key: key);
-  final IconData? iconData;
   final String title;
   final String? rightTitle;
 
@@ -54,7 +51,6 @@ class SettingsOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  SettingsRow(
-      left: iconData!=null ? Icon(iconData) : null,
       title: Text(title),
       rightTitle: rightTitle!=null ? Text("( $rightTitle )") : null,
 
@@ -91,7 +87,6 @@ class SettingsLine extends StatelessWidget {
 // [ left | title       rightTitle | right ]
 
 class SettingsRow extends StatelessWidget {
-  final Widget? left;
   final Widget? title;
   final Widget? right;
   final Widget? rightTitle;
@@ -103,7 +98,6 @@ class SettingsRow extends StatelessWidget {
 
   const SettingsRow({
     Key? key,
-    this.left,
     this.title,
     this.right,
     this.rightTitle,
@@ -130,14 +124,9 @@ class SettingsRow extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: left,
-                      ),
-                      title ?? const SizedBox.shrink(),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: title ?? const SizedBox.shrink(),
                   ),
                 ),
 

@@ -144,11 +144,9 @@ class CameraScreen extends StatelessWidget {
                                       enabled: true,
                                       onPressed: () =>
                                       ///FIXME
-
                                           // Navigator.of(context).push(MaterialPageRoute(
                                           //     builder: (_) => CameraSettingsDrawer(),
                                           // )),
-
                                           _scaffoldKey.currentState?.openDrawer(),
 
                                     ),
