@@ -75,7 +75,7 @@ class AddEndpointRow extends StatelessWidget {
         onPressed: disabled ? null : () {
           Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => const EditEndpointScreen()
+                  builder: (_) => const EditEndpointScreen(initialEndpointName: '', initialStreamingURL: '', initialStreamKey: '',)
               )
           );
         },
@@ -167,7 +167,11 @@ class EndpointRow extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => const EditEndpointScreen()
+                  builder: (_) => EditEndpointScreen(
+                    initialEndpointName: endpoint.name,
+                    initialStreamingURL: endpoint.url,
+                    initialStreamKey: endpoint.key,
+                  )
               )
           );
         },
