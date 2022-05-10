@@ -26,7 +26,7 @@ class CameraScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          content: const Text("Would you like to add streaming endpoint?"),
+          content: const Text("Would you like to add a streaming endpoint?"),
           actions: <CupertinoDialogAction>[
             CupertinoDialogAction(
               child: const Text('Cancel'),

@@ -20,7 +20,7 @@ class SettingsSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return  SettingsRow(
       left: null,
-      title: Text(title, ),
+      title: Text(title, overflow: TextOverflow.ellipsis, softWrap: false,),
       right: CupertinoSwitch(
         activeColor: Colors.blue,
         onChanged: disabled ? null : onChanged,

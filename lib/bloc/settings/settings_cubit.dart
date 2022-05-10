@@ -79,9 +79,8 @@ class SettingsCubit extends Cubit<SettingsState>  {
         }).toList()
     );
 
-    repository.streamerRepository.streamEndpointsList = newList;
+    _saveAndEmit(newList);
 
-    emit(state.copyWith(endpointsList: newList));
   }
 
   deleteEndpoint(StreamEndpoint value) {
@@ -90,16 +89,39 @@ class SettingsCubit extends Cubit<SettingsState>  {
         list: state.endpointsList.list.where((e) => e != value).toList(),
     );
 
-    repository.streamerRepository.streamEndpointsList = newList;
+    _saveAndEmit(newList);
 
-    emit(state.copyWith(endpointsList: newList));
   }
 
+  updateEndpoint(StreamEndpoint oldItem, StreamEndpoint newItem) {
+
+    final newList = StreamEndpointsList(
+        list: state.endpointsList.list.map((e) => (e!=oldItem ? e : newItem)).toList()
+    );
+
+    _saveAndEmit(newList);
+
+  }
+
+  addNewEndpoint(StreamEndpoint newValue) {
 
 
+    if (state.endpointsList.list.isEmpty){
+      newValue = newValue.copyWith(active: true);
+    }
+
+    final newList = StreamEndpointsList(
+        list: List.from( state.endpointsList.list )..add(newValue)
+    );
 
 
+    _saveAndEmit(newList);
+  }
 
+  _saveAndEmit(StreamEndpointsList newList){
+    repository.streamerRepository.streamEndpointsList = newList;
+    emit(state.copyWith(endpointsList: newList));
+  }
 
 
   @override

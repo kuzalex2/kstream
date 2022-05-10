@@ -75,7 +75,7 @@ class AddEndpointRow extends StatelessWidget {
         onPressed: disabled ? null : () {
           Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => const EditEndpointScreen(initialEndpointName: '', initialStreamingURL: '', initialStreamKey: '',)
+                  builder: (_) => const EditEndpointScreen(endpoint: StreamEndpoint.empty)
               )
           );
         },
@@ -124,7 +124,7 @@ class EndpointRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final child = SettingsSwitch(title: "${endpoint.name}", disabled: disabled, value: endpoint.active, onChanged: (value) {
+    final child = SettingsSwitch(title: endpoint.name, disabled: disabled, value: endpoint.active, onChanged: (value) {
       if (value){
         context.read<SettingsCubit>().setActiveEndpoint(endpoint);
       } else {
@@ -167,11 +167,7 @@ class EndpointRow extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (_) => EditEndpointScreen(
-                    initialEndpointName: endpoint.name,
-                    initialStreamingURL: endpoint.url,
-                    initialStreamKey: endpoint.key,
-                  )
+                  builder: (_) => EditEndpointScreen(endpoint: endpoint,)
               )
           );
         },
