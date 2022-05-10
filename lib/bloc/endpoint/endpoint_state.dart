@@ -6,9 +6,8 @@ part of 'endpoint_cubit.dart';
 
 class EditEndpointState extends Equatable {
 
-  final String initialEndpointName;
-  final String initialStreamingURL;
-  final String initialStreamKey;
+  final StreamEndpoint initialEndpoint;
+
 
   final EndpointNameInput endpointNameInput;
   final StreamingURLInput streamingURLInput;
@@ -18,15 +17,13 @@ class EditEndpointState extends Equatable {
   final String error;
 
 
-  bool get hasChanges => initialEndpointName != endpointNameInput.value
-      || initialStreamingURL != streamingURLInput.value
-      || initialStreamKey != streamKeyInput.value;
+  bool get hasChanges => initialEndpoint.name != endpointNameInput.value
+      || initialEndpoint.url != streamingURLInput.value
+      || initialEndpoint.key != streamKeyInput.value;
 
 
   const EditEndpointState( {
-    required this.initialEndpointName,
-    required this.initialStreamingURL,
-    required this.initialStreamKey,
+    required this.initialEndpoint,
 
     required this.endpointNameInput,
     required this.streamingURLInput,
@@ -36,20 +33,16 @@ class EditEndpointState extends Equatable {
   });
 
   factory EditEndpointState.initial({
-    required String initialEndpointName,
-    required String initialStreamingURL,
-    required String initialStreamKey,
+    required StreamEndpoint initialEndpoint,
   }) {
 
     return EditEndpointState(
-      initialEndpointName: initialEndpointName,
-      initialStreamingURL: initialStreamingURL,
-      initialStreamKey:initialStreamKey,
-      endpointNameInput: EndpointNameInput.pure(initialEndpointName),
-      streamingURLInput: StreamingURLInput.pure(initialStreamingURL),
-      streamKeyInput: StreamKeyInput.pure(initialStreamKey),
+      initialEndpoint: initialEndpoint,
+      endpointNameInput: EndpointNameInput.pure(initialEndpoint.name),
+      streamingURLInput: StreamingURLInput.pure(initialEndpoint.url),
+      streamKeyInput: StreamKeyInput.pure(initialEndpoint.key),
       error: '',
-      status: Formz.validate([EndpointNameInput.dirty(initialEndpointName), StreamingURLInput.dirty(initialStreamingURL), StreamKeyInput.dirty(initialStreamKey) ]),
+      status: Formz.validate([EndpointNameInput.dirty(initialEndpoint.name), StreamingURLInput.dirty(initialEndpoint.url), StreamKeyInput.dirty(initialEndpoint.key) ]),
 
     );
   }
@@ -63,9 +56,7 @@ class EditEndpointState extends Equatable {
     String? error,
   }) {
     return EditEndpointState(
-      initialEndpointName: initialEndpointName,
-      initialStreamingURL: initialStreamingURL,
-      initialStreamKey: initialStreamKey,
+      initialEndpoint: initialEndpoint,
 
       endpointNameInput: endpointNameInput ?? this.endpointNameInput,
       streamingURLInput: streamingURLInput ?? this.streamingURLInput,
@@ -78,9 +69,7 @@ class EditEndpointState extends Equatable {
 
   @override
   List<Object> get props => [
-    initialEndpointName,
-    initialStreamingURL,
-    initialStreamKey,
+    initialEndpoint,
     endpointNameInput,
     streamingURLInput,
     streamKeyInput,

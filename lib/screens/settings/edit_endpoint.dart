@@ -5,18 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kstream/bloc/endpoint/endpoint_cubit.dart';
 
 import 'package:formz/formz.dart';
-import 'package:kstream/repository/repository.dart';
+import 'package:kstream/bloc/settings/settings_cubit.dart';
+
+import 'package:kstream/models/stream_endpoint.dart';
 
 class EditEndpointScreen extends StatelessWidget {
-  final String initialEndpointName;
-  final String initialStreamingURL;
-  final String initialStreamKey;
+  final StreamEndpoint endpoint;
+
 
   const EditEndpointScreen({
     Key? key,
-    required this.initialEndpointName,
-    required this.initialStreamingURL,
-    required this.initialStreamKey,
+    required this.endpoint,
 
   }) : super(key: key);
 
@@ -24,10 +23,8 @@ class EditEndpointScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (_) => EditEndpointCubit(
-          initialStreamKey: initialStreamKey,
-          initialStreamingURL: initialStreamingURL,
-          initialEndpointName: initialEndpointName,
-            // repository: context.read<Repository>()
+          settingsCubit: context.read<SettingsCubit>(),
+          initialEndpoint: endpoint,
         ),
       child:const _EditEndpointScreen()
     );
@@ -42,17 +39,12 @@ class _EditEndpointScreen extends StatelessWidget {
 
   }) : super(key: key);
 
-
- ///ontext.read<SettingsCubit>().changeStreamingSettings(
-  //                               onApply(state.streamingState.streamingSettings, item)
-  //                           );
-
   @override
   Widget build(BuildContext context) {
 
       return Drawer(
         child: Scaffold(
-          appBar: _AppBar(),
+          appBar: const _AppBar(),
 
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -88,7 +80,16 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<EditEndpointCubit, EditEndpointState>(
+
+
+    return BlocConsumer<EditEndpointCubit, EditEndpointState>(
+
+      listener: (context, state) {
+        if (state.status.isSubmissionSuccess){
+          Navigator.of(context).pop();
+        }
+      },
+
       builder: (context, state) {
         final canSave = state.hasChanges &&
             state.status.isValidated &&
@@ -100,10 +101,11 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: const EdgeInsets.only(top: 0, right: 20),
               minSize: 0,
               onPressed: canSave ? () {
-
+                context.read<EditEndpointCubit>().save();
               } : null,
 
-              child: Text("Save", style: canSave ? const TextStyle(color: Colors.blueAccent) : null,)
+              child: state.status.isSubmissionInProgress ? const _SavingProgress():
+                  Text("Save", style: canSave ? const TextStyle(color: Colors.blueAccent) : null,)
             )
           ],
         );
@@ -113,6 +115,19 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
+}
+
+class _SavingProgress extends StatelessWidget {
+  const _SavingProgress({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      width: 18,
+      height: 18,
+      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),)
+    );
+  }
 }
 
 
@@ -156,44 +171,6 @@ class _EndpointNameInput extends StatelessWidget {
 }
 
 
-
-class _StreamKeyInput extends StatelessWidget {
-
-  const _StreamKeyInput({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-
-    return BlocBuilder<EditEndpointCubit, EditEndpointState>(
-      buildWhen: (previous, current) =>
-      previous.streamKeyInput != current.streamKeyInput ||
-          previous.status != current.status,
-
-      builder: (context, state) {
-        return TextFormField(
-
-          initialValue: state.streamKeyInput.value,
-          textCapitalization: TextCapitalization.words,
-          keyboardAppearance: Brightness.light,
-          onChanged: (value) =>
-              context.read<EditEndpointCubit>().streamKeyChanged(value),
-          readOnly: state.status.isSubmissionInProgress,
-          autofocus: false,
-          decoration: InputDecoration(
-            suffixIconConstraints: const BoxConstraints(
-                minHeight: 24,
-                minWidth: 24
-            ),
-            errorText: state.streamKeyInput.invalid ? "invalid": null,
-
-          ),
-        );
-      },
-    );
-  }
-}
-
-
 class _StreamingURLInput extends StatelessWidget {
 
   const _StreamingURLInput({Key? key}) : super(key: key);
@@ -228,5 +205,44 @@ class _StreamingURLInput extends StatelessWidget {
     );
   }
 }
+
+
+class _StreamKeyInput extends StatelessWidget {
+
+  const _StreamKeyInput({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return BlocBuilder<EditEndpointCubit, EditEndpointState>(
+      buildWhen: (previous, current) =>
+      previous.streamKeyInput != current.streamKeyInput ||
+          previous.status != current.status,
+
+      builder: (context, state) {
+        return TextFormField(
+
+          initialValue: state.streamKeyInput.value,
+          keyboardAppearance: Brightness.light,
+          onChanged: (value) =>
+              context.read<EditEndpointCubit>().streamKeyChanged(value),
+          readOnly: state.status.isSubmissionInProgress,
+          autofocus: false,
+          decoration: InputDecoration(
+            suffixIconConstraints: const BoxConstraints(
+                minHeight: 24,
+                minWidth: 24
+            ),
+            errorText: state.streamKeyInput.invalid ? "invalid": null,
+
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+
 
 

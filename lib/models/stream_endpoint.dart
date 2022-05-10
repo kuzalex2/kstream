@@ -21,6 +21,9 @@ class StreamEndpoint extends Equatable {
 
   const StreamEndpoint({required this.name, required this.url, required this.key, required this.active});
 
+  static const empty = StreamEndpoint(name: '', url: '', key: '', active: false);
+
+  get isEmpty => this == empty;
 
   StreamEndpoint copyWith({
     String? name,
