@@ -92,6 +92,11 @@ class CameraSettingsDrawer extends StatelessWidget {
 
         body: BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, state) {
+
+              if (state.streamingState.isEmpty) {
+                return const Loader();
+              }
+
               return ListView(
                 children: [
 

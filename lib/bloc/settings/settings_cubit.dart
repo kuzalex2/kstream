@@ -36,6 +36,8 @@ class SettingsCubit extends Cubit<SettingsState>  {
     try {
       _streamer = await repository.streamerRepository.streamer();
 
+      emit(state.copyWith(streamingState: _streamer!.state));
+
     } catch (e) {
       return;
     }
