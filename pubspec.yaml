@@ -23,14 +23,14 @@ dependencies:
   json_annotation: ^4.5.0
   formz: ^0.4.0
 
-#  flutter_rtmp_streamer:
-#    path: ../flutter_rtmp_streamer/
-
-
   flutter_rtmp_streamer:
-    git:
-      url: https://github.com/kuzalex2/flutter_rtmp_streamer.git
-      ref: df578c7
+    path: ../flutter_rtmp_streamer/
+
+
+#  flutter_rtmp_streamer:
+#    git:
+#      url: https://github.com/kuzalex2/flutter_rtmp_streamer.git
+#      ref: df578c7
 
   cupertino_icons: ^1.0.2
 
