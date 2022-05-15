@@ -241,8 +241,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: df578c7
-      resolved-ref: df578c7fcadf5a0162a060351a8c8f83667704b1
+      ref: "4040d6fc60d3b8dd15bd9b36289bd044d21c935f"
+      resolved-ref: "4040d6fc60d3b8dd15bd9b36289bd044d21c935f"
       url: "https://github.com/kuzalex2/flutter_rtmp_streamer.git"
     source: git
     version: "0.0.1"

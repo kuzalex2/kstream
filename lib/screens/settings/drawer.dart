@@ -230,17 +230,18 @@ class CameraSettingsDrawer extends StatelessWidget {
 
                   //
                   //
-                  SelectListOption<int>(
-                    title: "Channels Count",
+                  if (Platform.isAndroid)
+                    SelectListOption<int>(
+                      title: "Channels Count",
 
-                    options: audioChannelsCounts,
+                      options: audioChannelsCounts,
 
-                    isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
+                      isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
 
-                    onApply: (settings, newValue) => settings.copyWith(audioChannelCount: newValue.value),
+                      onApply: (settings, newValue) => settings.copyWith(audioChannelCount: newValue.value),
 
 
-                  ),
+                    ),
 
 
 
