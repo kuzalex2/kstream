@@ -15,7 +15,7 @@ class MyStreamingState extends Equatable {
   final String fatalError;
   final bool showLiveButton;
   final ConnectState connectState;
-  final Resolution resolution;
+  final StreamingState streamingState;
   final bool audioMuted;
   final bool showOpenSettings;
 
@@ -27,7 +27,7 @@ class MyStreamingState extends Equatable {
     required this.fatalError,
     required this.showLiveButton,
     required this.connectState,
-    required this.resolution,
+    required this.streamingState,
     required this.audioMuted,
     required this.showOpenSettings,
   });
@@ -38,7 +38,7 @@ class MyStreamingState extends Equatable {
     fatalError: "",
     showLiveButton: false,
     connectState: ConnectState.no,
-    resolution: Resolution(1, 1),
+    streamingState: StreamingState.empty,
     audioMuted: false,
     showOpenSettings: false,
   );
@@ -49,7 +49,7 @@ class MyStreamingState extends Equatable {
     String? fatalError,
     bool? showLiveButton,
     ConnectState? connectState,
-    Resolution? resolution,
+    StreamingState? streamingState,
     bool? audioMuted,
     bool? showOpenSettings,
 
@@ -60,7 +60,7 @@ class MyStreamingState extends Equatable {
       fatalError: fatalError ?? this.fatalError,
       showLiveButton: showLiveButton ?? this.showLiveButton,
       connectState: connectState ?? this.connectState,
-      resolution: resolution ?? this.resolution,
+      streamingState: streamingState ?? this.streamingState,
       audioMuted: audioMuted ?? this.audioMuted,
       showOpenSettings: showOpenSettings ?? this.showOpenSettings,
     );
@@ -73,7 +73,7 @@ class MyStreamingState extends Equatable {
     showLiveButton,
     fatalError,
     connectState,
-    resolution,
+    streamingState,
     audioMuted,
     showOpenSettings,
   ];

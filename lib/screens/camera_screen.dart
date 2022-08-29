@@ -95,7 +95,7 @@ class CameraScreen extends StatelessWidget {
                     if (state.initialized)
                       Center(
                         child: AspectRatio(
-                          aspectRatio: state.resolution.width == 0 ? 1.0 : 1.0 * state.resolution.height / state.resolution.width,
+                          aspectRatio: state.streamingState.aspectRatio,
                           child: Stack(
                             alignment: Alignment.topCenter,
                             children: [
