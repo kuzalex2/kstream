@@ -39,7 +39,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState>  {
       return;
     }
 
-    emit(state.copyWith(initialized: true, resolution: _streamer!.state.resolution, audioMuted: _streamer!.state.isAudioMuted));
+    emit(state.copyWith(initialized: true, streamingState: _streamer!.state.copyWith(), audioMuted: _streamer!.state.isAudioMuted));
 
     await Future.delayed(const Duration(seconds: 1));
     emit(state.copyWith(showLiveButton: state.initialized && !_streamer!.state.isStreaming));
@@ -59,7 +59,7 @@ class MyStreamingCubit extends Cubit<MyStreamingState>  {
       emit(state.copyWith(
         showLiveButton: state.initialized && !streamingState.isStreaming,
         connectState: connectState,
-        resolution: streamingState.resolution,
+        streamingState: streamingState.copyWith(),
         audioMuted: streamingState.isAudioMuted,
       ));
     });
