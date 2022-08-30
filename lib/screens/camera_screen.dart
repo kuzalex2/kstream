@@ -291,8 +291,8 @@ class MyGradient extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
 
     return Container(
-      height: orientation == Orientation.portrait ? size : height,
-      width: orientation == Orientation.landscape ? size : width,
+      height: size,
+      width: width,
       // color: Colors.red,
       decoration: BoxDecoration(
           gradient: gradient

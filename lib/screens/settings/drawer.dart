@@ -90,164 +90,167 @@ class CameraSettingsDrawer extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(title: const Text("Settings:"),),
 
-        body: BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (context, state) {
+        body: SafeArea(
 
-              if (state.streamingState.isEmpty) {
-                return const Loader();
-              }
+          child: BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, state) {
 
-              return ListView(
-                children: [
+                if (state.streamingState.isEmpty) {
+                  return const Loader();
+                }
+
+                return ListView(
+                  children: [
 
 
-                  const StreamingEndpointsWidget(),
+                    const StreamingEndpointsWidget(),
 
 
-                  const SettingsLine(text: "VIDEO"),
-                  //
+                    const SettingsLine(text: "VIDEO"),
+                    //
 
-                  ///
-                  ///
-                  /// Background streaming
+                    ///
+                    ///
+                    /// Background streaming
 
-                  Visibility(
-                    visible: Platform.isAndroid,
-                    child: SettingsSwitch(
-                      title: "Background streaming",
-                      disabled: state.streamingState.isStreaming || state.streamingState.inSettings,
-                      value: state.streamingState.streamingSettings.serviceInBackground,
-                      onChanged: (bool value) => cubit.changeStreamingSettings(
-                          state.streamingState.streamingSettings.copyWith(serviceInBackground: value)
+                    Visibility(
+                      visible: Platform.isAndroid,
+                      child: SettingsSwitch(
+                        title: "Background streaming",
+                        disabled: state.streamingState.isStreaming || state.streamingState.inSettings,
+                        value: state.streamingState.streamingSettings.serviceInBackground,
+                        onChanged: (bool value) => cubit.changeStreamingSettings(
+                            state.streamingState.streamingSettings.copyWith(serviceInBackground: value)
+                        ),
                       ),
                     ),
-                  ),
 
-                  const VideoResolutionsOption(),
+                    const VideoResolutionsOption(),
 
-                  //
-                  //
-                  SelectListOption<int>(
-                      title: "Bitrate",
-
-                      options: videoBitrates,
-
-                      isSelectedPredicate: (settings, item) => item == settings.videoBitrate,
-
-                      onApply: (settings, newValue) => settings.copyWith(videoBitrate: newValue.value),
-
-                  ),
-
-                  //
-                  //
-                  SelectListOption<StreamingCameraFacing>(
-                    title: "Camera Facing",
-
-                    options: cameraFacings,
-                    isSelectedPredicate: (settings, item) => item == settings.cameraFacing,
-
-                    onApply: (settings, newValue) => settings.copyWith(cameraFacing: newValue.value),
-
-
-                  ),
-
-
-
-                  //
-                  //
-                  SelectListOption<int>(
-                    title: "FPS",
-
-                    options: videoFPSs,
-                    isSelectedPredicate: (settings, item) => item == settings.videoFps,
-                    onApply: (settings, newValue) => settings.copyWith(videoFps: newValue.value),
-
-
-
-                  ),
-
-
-                  //
-                  //
-                  if (Platform.isIOS)
-                    SelectListOption<String>(
-                      title: "h264 Profile",
-
-                      options: h264Profiles,
-
-                      isSelectedPredicate: (settings, item) => item == settings.h264profile,
-                      onApply: (settings, newValue) => settings.copyWith(h264profile: newValue.value),
-
-
-                    ),
-
-                  //
-                  //
-                  if (Platform.isIOS)
-                    SelectListOption<String>(
-                      title: "Stabilization Mode",
-
-                      options: videoStabilizationModes,
-
-                      isSelectedPredicate: (settings, item) => item == settings.stabilizationMode,
-
-                      onApply: (settings, newValue) => settings.copyWith(stabilizationMode: newValue.value),
-
-
-                    ),
-
-
-                  const SettingsLine(text: "AUDIO"),
-
-                  //
-                  //
-                  SelectListOption<int>(
-                    title: "Audio Bitrate",
-
-                    options: audioBitrates,
-
-                    isSelectedPredicate: (settings, item) => item == settings.audioBitrate,
-                    onApply: (settings, newValue) => settings.copyWith(audioBitrate: newValue.value),
-
-
-
-
-                  ),
-
-                  //
-                  //
-                  SelectListOption<int>(
-                    title: "Sample Rate",
-
-                    options: audioSampleRates,
-
-                    isSelectedPredicate: (settings, item) => item == settings.audioSampleRate,
-                    onApply: (settings, newValue) => settings.copyWith(audioSampleRate: newValue.value),
-
-
-
-                  ),
-
-                  //
-                  //
-                  if (Platform.isAndroid)
+                    //
+                    //
                     SelectListOption<int>(
-                      title: "Channels Count",
+                        title: "Bitrate",
 
-                      options: audioChannelsCounts,
+                        options: videoBitrates,
 
-                      isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
+                        isSelectedPredicate: (settings, item) => item == settings.videoBitrate,
 
-                      onApply: (settings, newValue) => settings.copyWith(audioChannelCount: newValue.value),
+                        onApply: (settings, newValue) => settings.copyWith(videoBitrate: newValue.value),
+
+                    ),
+
+                    //
+                    //
+                    SelectListOption<StreamingCameraFacing>(
+                      title: "Camera Facing",
+
+                      options: cameraFacings,
+                      isSelectedPredicate: (settings, item) => item == settings.cameraFacing,
+
+                      onApply: (settings, newValue) => settings.copyWith(cameraFacing: newValue.value),
 
 
                     ),
 
 
 
-                ],
-              );
-            }
+                    //
+                    //
+                    SelectListOption<int>(
+                      title: "FPS",
+
+                      options: videoFPSs,
+                      isSelectedPredicate: (settings, item) => item == settings.videoFps,
+                      onApply: (settings, newValue) => settings.copyWith(videoFps: newValue.value),
+
+
+
+                    ),
+
+
+                    //
+                    //
+                    if (Platform.isIOS)
+                      SelectListOption<String>(
+                        title: "h264 Profile",
+
+                        options: h264Profiles,
+
+                        isSelectedPredicate: (settings, item) => item == settings.h264profile,
+                        onApply: (settings, newValue) => settings.copyWith(h264profile: newValue.value),
+
+
+                      ),
+
+                    //
+                    //
+                    if (Platform.isIOS)
+                      SelectListOption<String>(
+                        title: "Stabilization Mode",
+
+                        options: videoStabilizationModes,
+
+                        isSelectedPredicate: (settings, item) => item == settings.stabilizationMode,
+
+                        onApply: (settings, newValue) => settings.copyWith(stabilizationMode: newValue.value),
+
+
+                      ),
+
+
+                    const SettingsLine(text: "AUDIO"),
+
+                    //
+                    //
+                    SelectListOption<int>(
+                      title: "Audio Bitrate",
+
+                      options: audioBitrates,
+
+                      isSelectedPredicate: (settings, item) => item == settings.audioBitrate,
+                      onApply: (settings, newValue) => settings.copyWith(audioBitrate: newValue.value),
+
+
+
+
+                    ),
+
+                    //
+                    //
+                    SelectListOption<int>(
+                      title: "Sample Rate",
+
+                      options: audioSampleRates,
+
+                      isSelectedPredicate: (settings, item) => item == settings.audioSampleRate,
+                      onApply: (settings, newValue) => settings.copyWith(audioSampleRate: newValue.value),
+
+
+
+                    ),
+
+                    //
+                    //
+                    if (Platform.isAndroid)
+                      SelectListOption<int>(
+                        title: "Channels Count",
+
+                        options: audioChannelsCounts,
+
+                        isSelectedPredicate: (settings, item) => item == settings.audioChannelCount,
+
+                        onApply: (settings, newValue) => settings.copyWith(audioChannelCount: newValue.value),
+
+
+                      ),
+
+
+
+                  ],
+                );
+              }
+          ),
         ),
       ),
     );
