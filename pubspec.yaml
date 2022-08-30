@@ -1,7 +1,7 @@
 name: kstream
 description: Simple rtmp streamer
 
-version: 0.0.1+1
+version: 0.0.2+2
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -30,7 +30,7 @@ dependencies:
   flutter_rtmp_streamer:
     git:
       url: https://github.com/kuzalex2/flutter_rtmp_streamer.git
-      ref: e36c597
+      ref: d25d272d4cc68078b3d202e7fba8a903396ce07c
 
   cupertino_icons: ^1.0.2
 
